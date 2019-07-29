@@ -14,7 +14,6 @@ chmod u+x start.sh
 ```bash
 ./start.sh
 ```
-```
 
 ### Base image
 By default, the base docker image is prebuild by us and host by [dockerhub](https://hub.docker.com/r/dayta/ml_development), here are the included libraries and tools
