@@ -8,7 +8,7 @@ git clone https://github.com/dayta-ai/deepo.git
 2. add execution permission to start.sh
 ```bash
 cd deepo
-chmoud u+x start.sh
+chmod u+x start.sh
 ```
 3. Build docker image and run the container, the container will be removed after you exit from bash
 ```bash
