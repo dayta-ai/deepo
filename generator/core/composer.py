@@ -47,7 +47,7 @@ class Composer(object):
                 rm -rf /var/lib/apt/lists/* \
                        /etc/apt/sources.list.d/cuda.list \
                        /etc/apt/sources.list.d/nvidia-ml.list && \
-
+                           
                 apt-get update && \
             ''' % ('ubuntu:%s' % self.ubuntu_ver if self.cuda_ver is None
                    else 'nvidia/cuda:%s-cudnn%s-devel-ubuntu%s' % (
@@ -65,7 +65,8 @@ class Composer(object):
                 ldconfig && \
                 apt-get clean && \
                 apt-get autoremove && \
-                rm -rf /var/lib/apt/lists/* /tmp/* ~/*
+                rm -rf /var/lib/apt/lists/* /tmp/* ~/* && \
+                echo "root:docker" | chpasswd
             ''',
             r'''
             EXPOSE %s

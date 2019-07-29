@@ -18,12 +18,17 @@ class Tools(Module):
                 git \
                 vim \
                 curl \
+                libcurl4-gnutls-dev \
+                zlib1g-dev \
                 unzip \
                 unrar \
+                htop \
+                sudo \
+                nano \
                 && \
 
             $GIT_CLONE https://github.com/Kitware/CMake ~/cmake && \
             cd ~/cmake && \
-            ./bootstrap && \
+            ./bootstrap --system-curl && \
             make -j"$(nproc)" install && \
             '''
