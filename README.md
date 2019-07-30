@@ -16,8 +16,8 @@ set X11UseLocalhost to no
 git clone https://github.com/dayta-ai/deepo.git
 ```
 4. Check variables in start.sh
-##### Put your projects(code) in ```bash~/github``` folder or change the variable SOURCE_CODE_DIR
-##### Check if PROJECT variable is set to your desire project name
+⋅⋅1 Put your projects(code) in ```bash~/github``` folder or change the variable SOURCE_CODE_DIR
+⋅⋅2 Check if PROJECT variable is set to your desire project name
 
 ### How to use it locally(TLDR)
 1. add execution permission to start_local.sh
