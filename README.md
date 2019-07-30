@@ -56,7 +56,7 @@ By default, the base docker image is prebuild by us and host by [dockerhub](http
 docker pull dayta/ml_developmen:latest
 ```
 
-#### Build your own base image
+#### Build your own base image (Optional)
 Please follow the guide from original deepo repo
 ```bash
 cd generator
