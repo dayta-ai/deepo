@@ -29,7 +29,7 @@ chmod u+x start_local.sh
 ```bash
 ./start_local.sh
 ```
-#### Run container remotely
+### How to use it remotely(TLDR)
 1. ssh to your remote workstation
 ```bash
 ssh -XY my_workstation
