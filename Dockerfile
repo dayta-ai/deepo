@@ -6,7 +6,7 @@ ARG REQUIREMENTS
 
 # Create User which has the same user id as host user 
 RUN groupadd -g ${GROUP_ID} ${USERNAME} && \
-    useradd -rm -d /home/${USERNAME} -s /bin/bash -u ${USER_ID} -g ${USERNAME} -G sudo -p "$(openssl passwd -1 docker)" ${USERNAME}
+    useradd -rm -d /home/${USERNAME} -s /bin/bash -u ${USER_ID} -g ${USERNAME} -G sudo,video -p "$(openssl passwd -1 docker)" ${USERNAME}
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 
