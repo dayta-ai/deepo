@@ -89,7 +89,7 @@ docker build -t daytabase/ml_development .
 ### Other info
 1. Container name
 
-The suffix of container name indicate the index of container, you can multiple containers at the same time by run start.sh multiple times. **To do: make container index incremental**
+The suffix of container name indicate the index of container, you can multiple containers at the same time by run start.sh multiple times. ~~To do: make container index incremental~~
 
 2. User password
 
