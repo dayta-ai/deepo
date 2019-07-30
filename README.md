@@ -17,17 +17,7 @@ set X11UseLocalhost to no
 git clone https://github.com/dayta-ai/deepo.git
 ```
 #### Run container locally
-2. add execution permission to start.sh
-```bash
-cd deepo
-chmod u+x start_remote.sh
-```
-3. Build docker image and run the container, the container will be removed after you exit from bash
-```bash
-./start_remote.sh
-```
-#### Run container remotely
-2. add execution permission to start.sh
+2. add execution permission to start_local.sh
 ```bash
 cd deepo
 chmod u+x start_local.sh
@@ -35,6 +25,16 @@ chmod u+x start_local.sh
 3. Build docker image and run the container, the container will be removed after you exit from bash
 ```bash
 ./start_local.sh
+```
+#### Run container remotely
+2. add execution permission to start_remote.sh
+```bash
+cd deepo
+chmod u+x start_remote.sh
+```
+3. Build docker image and run the container, the container will be removed after you exit from bash
+```bash
+./start_remote.sh
 ```
 
 ### Base image
