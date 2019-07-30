@@ -1,0 +1,6 @@
+.git*
+*.log
+
+#display sockets and auth files
+.display*
+
