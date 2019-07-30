@@ -44,9 +44,9 @@ socat -d -d -d TCP4:localhost:60${DISPLAY_NUMBER} UNIX-LISTEN:.display_${DISPLAY
 
 #check number of camera device
 NUM_CAM=$(ls -dl /dev/video* | grep '^c' | wc -l)
-
+echo $NUM_CAM
 # Launch the container
-if [ $NUM_CAM == 2 ]
+if [ $NUM_CAM = 2 ]
 then
     docker run -it --rm \
         --name ${ML_CONTIANER_NAME} \
@@ -61,7 +61,7 @@ then
         -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
         -v ${PWD}/.display_${DISPLAY_NUMBER}/Xauthority:/home/${ML_CONTIANER_USERNAME}/.Xauthority \
         ${ML_IMAGE_NAME} bash
-elif [ $NUM_CAM == 1 ]
+elif [ $NUM_CAM = 1 ]
 then
     docker run -it --rm \
         --name ${ML_CONTIANER_NAME} \

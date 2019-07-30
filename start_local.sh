@@ -22,7 +22,7 @@ rm ./requirements.txt
 NUM_CAM=$(ls -dl /dev/video* | grep '^c' | wc -l)
 
 # Launch the container
-if [ $NUM_CAM == 2 ]
+if [ $NUM_CAM = 2 ]
 then
     docker run -it --rm \
         --name ${ML_CONTIANER_NAME} \
@@ -36,7 +36,7 @@ then
         -v /tmp/.X11-unix:/tmp/.X11-unix \
         -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTIANER_USERNAME}/${SOURCE_CODE_DIR} \
         ${ML_IMAGE_NAME} bash
-elif [ $NUM_CAM == 1 ]
+elif [ $NUM_CAM = 1 ]
 then
     docker run -it --rm \
         --name ${ML_CONTIANER_NAME} \
