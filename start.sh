@@ -2,7 +2,8 @@
 ML_CONTIANER_DISPLAY="0"
 ML_CONTIANER_USERNAME="docker"
 ML_IMAGE_NAME="my_ml_dev"
-ML_CONTIANER_HOSTNAME="ml_container"
+ML_CONTIANER_NAME="ml_container"
+ML_CONTIANER_NAME=$ML_CONTIANER_NAME\_$(docker ps -a --format '{{.Names}}' | grep "^$ML_CONTIANER_NAME" | wc -l)
 SOURCE_CODE_DIR="github"
 PROJECT="DaytaBase"
 
@@ -29,17 +30,22 @@ rm ./requirements.txt
 
 # Extract current authentication cookie
 AUTH_COOKIE=$(xauth list | grep "^$(hostname):${DISPLAY_NUMBER} " | awk '{print $3}')
+if [ -z "$AUTH_COOKIE" ]
+then
+    AUTH_COOKIE=$(xauth list | grep "^$(hostname)/unix:${DISPLAY_NUMBER} " | awk '{print $3}')
+fi
+echo $AUTH_COOKIE
 
 # Create the new X Authority file
-xauth -v -f .display_${DISPLAY_NUMBER}/Xauthority add ${ML_CONTIANER_HOSTNAME}/unix:${ML_CONTIANER_DISPLAY} MIT-MAGIC-COOKIE-1 ${AUTH_COOKIE}
+xauth -v -f .display_${DISPLAY_NUMBER}/Xauthority add ${ML_CONTIANER_NAME}/unix:${ML_CONTIANER_DISPLAY} MIT-MAGIC-COOKIE-1 ${AUTH_COOKIE}
 
 # Proxy with the :0 DISPLAY
 socat -d -d -d TCP4:localhost:60${DISPLAY_NUMBER} UNIX-LISTEN:.display_${DISPLAY_NUMBER}/socket/X${ML_CONTIANER_DISPLAY} > socat.log 2>&1 &
 
 # Launch the container
 docker run -it --rm \
-    --name ${ML_CONTIANER_HOSTNAME} \
-    -h ${ML_CONTIANER_HOSTNAME} \
+    --name ${ML_CONTIANER_NAME} \
+    -h ${ML_CONTIANER_NAME} \
     --runtime nvidia \
     -e QT_X11_NO_MITSHM=1 \
     -e DISPLAY=:${ML_CONTIANER_DISPLAY} \
@@ -48,5 +54,5 @@ docker run -it --rm \
     -v /dev/video1:/dev/video1 \
     -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
     -v ${PWD}/.display_${DISPLAY_NUMBER}/Xauthority:/home/${ML_CONTIANER_USERNAME}/.Xauthority \
-    --hostname ${ML_CONTIANER_HOSTNAME} \
+    --hostname ${ML_CONTIANER_NAME} \
     ${ML_IMAGE_NAME} bash
