@@ -18,16 +18,46 @@ docker build \
 
 rm ./requirements.txt
 
+#check number of camera device
+NUM_CAM=$(ls -dl /dev/video* | grep '^c' | wc -l)
+
 # Launch the container
-docker run -it --rm \
-    --name ${ML_CONTIANER_NAME} \
-    --hostname ${ML_CONTIANER_NAME} \
-    --runtime nvidia \
-    --device /dev/video0:/dev/video0 \
-    --device /dev/video1:/dev/video1 \
-    -h ${ML_CONTIANER_NAME} \
-    -e QT_X11_NO_MITSHM=1 \
-    -e DISPLAY=unix${DISPLAY} \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTIANER_USERNAME}/${SOURCE_CODE_DIR} \
-    ${ML_IMAGE_NAME} bash
+if [ $NUM_CAM == 2 ]
+then
+    docker run -it --rm \
+        --name ${ML_CONTIANER_NAME} \
+        --hostname ${ML_CONTIANER_NAME} \
+        --runtime nvidia \
+        --device /dev/video0:/dev/video0 \
+        --device /dev/video1:/dev/video1 \
+        -h ${ML_CONTIANER_NAME} \
+        -e QT_X11_NO_MITSHM=1 \
+        -e DISPLAY=unix${DISPLAY} \
+        -v /tmp/.X11-unix:/tmp/.X11-unix \
+        -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTIANER_USERNAME}/${SOURCE_CODE_DIR} \
+        ${ML_IMAGE_NAME} bash
+elif [ $NUM_CAM == 1 ]
+then
+    docker run -it --rm \
+        --name ${ML_CONTIANER_NAME} \
+        --hostname ${ML_CONTIANER_NAME} \
+        --runtime nvidia \
+        --device /dev/video0:/dev/video0 \
+        -h ${ML_CONTIANER_NAME} \
+        -e QT_X11_NO_MITSHM=1 \
+        -e DISPLAY=unix${DISPLAY} \
+        -v /tmp/.X11-unix:/tmp/.X11-unix \
+        -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTIANER_USERNAME}/${SOURCE_CODE_DIR} \
+        ${ML_IMAGE_NAME} bash    
+else
+    docker run -it --rm \
+        --name ${ML_CONTIANER_NAME} \
+        --hostname ${ML_CONTIANER_NAME} \
+        --runtime nvidia \
+        -h ${ML_CONTIANER_NAME} \
+        -e QT_X11_NO_MITSHM=1 \
+        -e DISPLAY=unix${DISPLAY} \
+        -v /tmp/.X11-unix:/tmp/.X11-unix \
+        -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTIANER_USERNAME}/${SOURCE_CODE_DIR} \
+        ${ML_IMAGE_NAME} bash
+fi

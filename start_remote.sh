@@ -42,17 +42,49 @@ xauth -v -f .display_${DISPLAY_NUMBER}/Xauthority add ${ML_CONTIANER_NAME}/unix:
 # Proxy with the :0 DISPLAY
 socat -d -d -d TCP4:localhost:60${DISPLAY_NUMBER} UNIX-LISTEN:.display_${DISPLAY_NUMBER}/socket/X${ML_CONTIANER_DISPLAY} > socat.log 2>&1 &
 
+#check number of camera device
+NUM_CAM=$(ls -dl /dev/video* | grep '^c' | wc -l)
+
 # Launch the container
-docker run -it --rm \
-    --name ${ML_CONTIANER_NAME} \
-    --hostname ${ML_CONTIANER_NAME} \
-    --runtime nvidia \
-    --device /dev/video0:/dev/video0 \
-    --device /dev/video1:/dev/video1 \
-    -h ${ML_CONTIANER_NAME} \
-    -e QT_X11_NO_MITSHM=1 \
-    -e DISPLAY=:${ML_CONTIANER_DISPLAY} \
-    -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTIANER_USERNAME}/${SOURCE_CODE_DIR} \
-    -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
-    -v ${PWD}/.display_${DISPLAY_NUMBER}/Xauthority:/home/${ML_CONTIANER_USERNAME}/.Xauthority \
-    ${ML_IMAGE_NAME} bash
+if [ $NUM_CAM == 2 ]
+then
+    docker run -it --rm \
+        --name ${ML_CONTIANER_NAME} \
+        --hostname ${ML_CONTIANER_NAME} \
+        --runtime nvidia \
+        --device /dev/video0:/dev/video0 \
+        --device /dev/video1:/dev/video1 \
+        -h ${ML_CONTIANER_NAME} \
+        -e QT_X11_NO_MITSHM=1 \
+        -e DISPLAY=:${ML_CONTIANER_DISPLAY} \
+        -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTIANER_USERNAME}/${SOURCE_CODE_DIR} \
+        -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
+        -v ${PWD}/.display_${DISPLAY_NUMBER}/Xauthority:/home/${ML_CONTIANER_USERNAME}/.Xauthority \
+        ${ML_IMAGE_NAME} bash
+elif [ $NUM_CAM == 1 ]
+then
+    docker run -it --rm \
+        --name ${ML_CONTIANER_NAME} \
+        --hostname ${ML_CONTIANER_NAME} \
+        --runtime nvidia \
+        --device /dev/video0:/dev/video0 \
+        -h ${ML_CONTIANER_NAME} \
+        -e QT_X11_NO_MITSHM=1 \
+        -e DISPLAY=:${ML_CONTIANER_DISPLAY} \
+        -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTIANER_USERNAME}/${SOURCE_CODE_DIR} \
+        -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
+        -v ${PWD}/.display_${DISPLAY_NUMBER}/Xauthority:/home/${ML_CONTIANER_USERNAME}/.Xauthority \
+        ${ML_IMAGE_NAME} bash
+else
+    docker run -it --rm \
+        --name ${ML_CONTIANER_NAME} \
+        --hostname ${ML_CONTIANER_NAME} \
+        --runtime nvidia \
+        -h ${ML_CONTIANER_NAME} \
+        -e QT_X11_NO_MITSHM=1 \
+        -e DISPLAY=:${ML_CONTIANER_DISPLAY} \
+        -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTIANER_USERNAME}/${SOURCE_CODE_DIR} \
+        -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
+        -v ${PWD}/.display_${DISPLAY_NUMBER}/Xauthority:/home/${ML_CONTIANER_USERNAME}/.Xauthority \
+        ${ML_IMAGE_NAME} bash
+fi                
