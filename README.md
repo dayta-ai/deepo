@@ -6,27 +6,34 @@ This repo is a fork to the modular docker machine learning environment [deepo](h
 sudo apt install -y socat
 ```
 2. Edit sshd settings (For remote usage)
+
 use your text editor to edit /etc/ssh/sshd_config
 set X11Forwarding to yes
 set X11UseLocalhost to no
 
-
-### How to use it (TLDR)
-1. Clone the repo
+3. Clone the repo
 ```bash
 git clone https://github.com/dayta-ai/deepo.git
 ```
-#### Run container locally
-2. add execution permission to start_local.sh
+4. Check variables in start.sh
+##### Put your projects(code) in ```bash~/github``` folder or change the variable SOURCE_CODE_DIR
+##### Check if PROJECT variable is set to your desire project name
+
+### How to use it locally(TLDR)
+1. add execution permission to start_local.sh
 ```bash
 cd deepo
 chmod u+x start_local.sh
 ```
-3. Build docker image and run the container, the container will be removed after you exit from bash
+2. Build docker image and run the container, the container will be removed after you exit from bash
 ```bash
 ./start_local.sh
 ```
 #### Run container remotely
+1. ssh to your remote workstation
+```bash
+ssh -XY my_workstation
+```
 2. add execution permission to start_remote.sh
 ```bash
 cd deepo
