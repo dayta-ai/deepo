@@ -39,23 +39,32 @@ chmod u+x start_remote.sh
 
 ### Base image
 By default, the base docker image is prebuild by us and host by [dockerhub](https://hub.docker.com/r/dayta/ml_development), here are the included libraries and tools
-1. python 3.7
-2. opencv with ffmpeg support
-3. cuda 10.0 and cudnn 7
-4. pytorch & apex
-5. jupyer
-6. tensorflow
-7. sklearn
-8. onnx
-9. vim and nano
+1. ubuntu 18.04
+2. cuda 10.0 and cudnn 7
+3. python 3.7
+4. opencv with ffmpeg support
+5. pytorch 1.1 & apex
+6. jupyer
+7. tensorflow 1.14 & keras
+8. mxnet
+9. sklearn
+10. onnx
+11. vim and nano
 
 #### Use your own base image
 Please follow the guide from original deepo repo
+```bash
+cd generator
+python generate.py --ubuntu-ver 18.04 --cuda-ver 10.0 --cudnn-ver 7  python==3.7 pytorch==1.1 apex jupyter tensorflow==1.14 keras onnx opencv sklearn pylint mxnet
+```
 
 ### Other info
 1. Container name
+
 The suffix of container name indicate the index of container, you can multiple containers at the same time by run start.sh multiple times
+
 2. User password
+
 The default password is docker, feel free to change it in the outer Dockerfile
 
 ### Reference
