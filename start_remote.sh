@@ -44,7 +44,7 @@ socat -d -d -d TCP4:localhost:60${DISPLAY_NUMBER} UNIX-LISTEN:.display_${DISPLAY
 
 #check number of camera device
 NUM_CAM=$(ls -dl /dev/video* | grep '^c' | wc -l)
-echo $NUM_CAM
+
 # Launch the container
 if [ $NUM_CAM = 2 ]
 then
