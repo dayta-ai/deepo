@@ -53,14 +53,15 @@ By default, the base docker image is prebuild by us and host by [dockerhub](http
 
 #### Update base image
 ```bash
-docker push dayta/ml_developmen:latest
+docker pull dayta/ml_developmen:latest
 ```
 
-#### Use your own base image
+#### Build your own base image
 Please follow the guide from original deepo repo
 ```bash
 cd generator
 python generate.py Dockerfile python==3.7 pytorch==1.1 apex jupyter tensorflow==1.14 keras onnx opencv sklearn pylint mxnet --ubuntu-ver 18.04 --cuda-ver 10.0 --cudnn-ver 7
+docker build -t daytabase/ml_development .
 ```
 
 ### Other info
