@@ -89,4 +89,5 @@ Updated: no privileged is needed to access webcam from container
 1. [Running a graphical app in a Docker container, on a remote server](https://blog.yadutaf.fr/2017/09/10/running-a-graphical-app-in-a-docker-container-on-a-remote-server/)
 2. [Docker tutorial](https://github.com/dayta-ai/Resource/tree/master/docker/tutorial)
 3. [Running a Container With a Non Root User](https://medium.com/better-programming/running-a-container-with-a-non-root-user-e35830d1f42a)
+4. [Docker — using webcam](https://medium.com/@zwinny/docker-using-webcam-9fafb26cf1e6)
 
