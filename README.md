@@ -19,7 +19,11 @@ git clone https://github.com/dayta-ai/deepo.git
     1. Put your projects(code) in ```bash~/github``` folder or change the variable SOURCE_CODE_DIR
     2. Check if PROJECT variable is set to your desire project name
 
-### How to use it locally(TLDR)
+### Prerequisite (Client)
+
+1. Install [XQuartz](https://www.xquartz.org/) (For Mac only)
+
+### How to use it in headless mode(TLDR)
 1. add execution permission to start_local.sh
 ```bash
 cd deepo
@@ -29,8 +33,19 @@ chmod u+x start_local.sh
 ```bash
 ./start_local.sh
 ```
-#### Run container remotely
-1. ssh to your remote workstation
+
+### How to use it locally with GUI(TLDR)
+1. add execution permission to start_local.sh
+```bash
+cd deepo
+chmod u+x start_local.sh
+```
+2. Build docker image and run the container, the container will be removed after you exit from bash
+```bash
+./start_local.sh
+```
+### How to use it remotely with GUI(TLDR)
+1. ssh to your remote workstation with x11 forwarding flags
 ```bash
 ssh -XY my_workstation
 ```
@@ -89,4 +104,5 @@ Updated: no privileged is needed to access webcam from container
 1. [Running a graphical app in a Docker container, on a remote server](https://blog.yadutaf.fr/2017/09/10/running-a-graphical-app-in-a-docker-container-on-a-remote-server/)
 2. [Docker tutorial](https://github.com/dayta-ai/Resource/tree/master/docker/tutorial)
 3. [Running a Container With a Non Root User](https://medium.com/better-programming/running-a-container-with-a-non-root-user-e35830d1f42a)
+4. [Docker — using webcam](https://medium.com/@zwinny/docker-using-webcam-9fafb26cf1e6)
 
