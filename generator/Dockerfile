@@ -3,12 +3,13 @@
 # ------------------------------------------------------------------
 # python        3.7    (apt)
 # jupyter       latest (pip)
+# mxnet         latest (pip)
 # onnx          latest (pip)
-# pytorch       latest (pip)
+# pylint        latest (pip)
+# pytorch       1.1    (pip)
 # sklearn       latest (pip)
-# tensorflow    latest (pip)
+# tensorflow    1.14   (pip)
 # apex          latest (git)
-# jupyterlab    latest (pip)
 # keras         latest (pip)
 # opencv        4.0.1  (git)
 # ==================================================================
@@ -18,9 +19,11 @@ ENV LANG C.UTF-8
 RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     PIP_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
     GIT_CLONE="git clone --depth 10" && \
+
     rm -rf /var/lib/apt/lists/* \
            /etc/apt/sources.list.d/cuda.list \
            /etc/apt/sources.list.d/nvidia-ml.list && \
+
     apt-get update && \
 
 # ==================================================================
@@ -100,6 +103,20 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         && \
 
 # ==================================================================
+# mxnet
+# ------------------------------------------------------------------
+
+    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+        libatlas-base-dev \
+        graphviz \
+        && \
+
+    $PIP_INSTALL \
+        mxnet-cu100 \
+        graphviz \
+        && \
+
+# ==================================================================
 # onnx
 # ------------------------------------------------------------------
 
@@ -110,6 +127,19 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 
     $PIP_INSTALL \
         onnx \
+        && \
+
+# ==================================================================
+# pylint
+# ------------------------------------------------------------------
+
+    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+        protobuf-compiler \
+        libprotoc-dev \
+        && \
+
+    $PIP_INSTALL \
+        pylint \
         && \
 
 # ==================================================================
@@ -125,12 +155,8 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         typing \
     	torch \
         && \
-    $PIP_INSTALL \
-    "git+https://github.com/pytorch/vision.git" && \
-    $PIP_INSTALL \
-        torch_nightly -f \
-        https://download.pytorch.org/whl/nightly/cu100/torch_nightly.html \
-        && \
+    $PIP_INSTALL https://download.pytorch.org/whl/cu100/torch-1.1.0-cp37-cp37m-linux_x86_64.whl && \
+    $PIP_INSTALL https://download.pytorch.org/whl/cu100/torchvision-0.3.0-cp37-cp37m-linux_x86_64.whl && \
 
 # ==================================================================
 # sklearn
@@ -145,7 +171,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # ------------------------------------------------------------------
 
     $PIP_INSTALL \
-        tf-nightly-gpu-2.0-preview \
+        tensorflow-gpu==1.14 \
         && \
 
 # ==================================================================
@@ -155,14 +181,6 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     $GIT_CLONE https://github.com/NVIDIA/apex.git && \
     cd apex && \
     pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./  && \
-
-# ==================================================================
-# jupyterlab
-# ------------------------------------------------------------------
-
-    $PIP_INSTALL \
-        jupyterlab \
-        && \
 
 # ==================================================================
 # keras
