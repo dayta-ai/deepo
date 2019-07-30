@@ -67,6 +67,10 @@ The suffix of container name indicate the index of container, you can multiple c
 
 The default password is docker, feel free to change it in the outer Dockerfile
 
+3. Webcam
+
+Currently you have to add --privileged argument to docker run command in start.sh in order to use webcam
+
 ### Reference
 1. [Running a graphical app in a Docker container, on a remote server](https://blog.yadutaf.fr/2017/09/10/running-a-graphical-app-in-a-docker-container-on-a-remote-server/)
 2. [Docker tutorial](https://github.com/dayta-ai/Resource/tree/master/docker/tutorial)
