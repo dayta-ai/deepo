@@ -55,13 +55,13 @@ By default, the base docker image is prebuild by us and host by [dockerhub](http
 Please follow the guide from original deepo repo
 ```bash
 cd generator
-python generate.py --ubuntu-ver 18.04 --cuda-ver 10.0 --cudnn-ver 7  python==3.7 pytorch==1.1 apex jupyter tensorflow==1.14 keras onnx opencv sklearn pylint mxnet
+python generate.py Dockerfile python==3.7 pytorch==1.1 apex jupyter tensorflow==1.14 keras onnx opencv sklearn pylint mxnet --ubuntu-ver 18.04 --cuda-ver 10.0 --cudnn-ver 7
 ```
 
 ### Other info
 1. Container name
 
-The suffix of container name indicate the index of container, you can multiple containers at the same time by run start.sh multiple times
+The suffix of container name indicate the index of container, you can multiple containers at the same time by run start.sh multiple times. **To do: make container index incremental**
 
 2. User password
 
@@ -69,7 +69,8 @@ The default password is docker, feel free to change it in the outer Dockerfile
 
 3. Webcam
 
-Currently you have to add --privileged argument to docker run command in start.sh in order to use webcam
+~~Currently you have to add --privileged argument to docker run command in start.sh in order to use webcam~~
+Updated: no privileged is needed to access webcam from container
 
 ### Reference
 1. [Running a graphical app in a Docker container, on a remote server](https://blog.yadutaf.fr/2017/09/10/running-a-graphical-app-in-a-docker-container-on-a-remote-server/)
