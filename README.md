@@ -51,6 +51,11 @@ By default, the base docker image is prebuild by us and host by [dockerhub](http
 10. onnx
 11. vim and nano
 
+#### Update base image
+```bash
+docker push dayta/ml_developmen:latest
+```
+
 #### Use your own base image
 Please follow the guide from original deepo repo
 ```bash
