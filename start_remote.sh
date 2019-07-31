@@ -69,6 +69,7 @@ then
         -e QT_X11_NO_MITSHM=1 \
         -e DISPLAY=:${ML_CONTAINER_DISPLAY} \
         -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR} \
+        -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
         -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
         -v ${PWD}/.display_${DISPLAY_NUMBER}/Xauthority:/home/${ML_CONTAINER_USERNAME}/.Xauthority \
         ${ML_IMAGE_NAME} bash
@@ -83,6 +84,7 @@ then
         -e QT_X11_NO_MITSHM=1 \
         -e DISPLAY=:${ML_CONTAINER_DISPLAY} \
         -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR} \
+        -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
         -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
         -v ${PWD}/.display_${DISPLAY_NUMBER}/Xauthority:/home/${ML_CONTAINER_USERNAME}/.Xauthority \
         ${ML_IMAGE_NAME} bash
@@ -95,6 +97,7 @@ else
         -e QT_X11_NO_MITSHM=1 \
         -e DISPLAY=:${ML_CONTAINER_DISPLAY} \
         -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR} \
+        -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
         -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
         -v ${PWD}/.display_${DISPLAY_NUMBER}/Xauthority:/home/${ML_CONTAINER_USERNAME}/.Xauthority \
         ${ML_IMAGE_NAME} bash

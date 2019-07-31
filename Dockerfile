@@ -10,6 +10,9 @@ RUN groupadd -g ${GROUP_ID} ${USERNAME} && \
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 
+# Create pytorch cache directory
+RUN mkdir -p .cache/torch
+
 # Install torchreid
 RUN git clone https://github.com/KaiyangZhou/deep-person-reid.git && \
     cd deep-person-reid && \

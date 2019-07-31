@@ -45,6 +45,7 @@ then
         -e DISPLAY=unix${DISPLAY} \
         -v /tmp/.X11-unix:/tmp/.X11-unix \
         -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR} \
+        -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
         ${ML_IMAGE_NAME} bash
 elif [ $NUM_CAM = 1 ]
 then
@@ -58,6 +59,7 @@ then
         -e DISPLAY=unix${DISPLAY} \
         -v /tmp/.X11-unix:/tmp/.X11-unix \
         -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR} \
+        -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
         ${ML_IMAGE_NAME} bash    
 else
     docker run -it --rm \
@@ -69,5 +71,6 @@ else
         -e DISPLAY=unix${DISPLAY} \
         -v /tmp/.X11-unix:/tmp/.X11-unix \
         -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR} \
+        -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
         ${ML_IMAGE_NAME} bash
 fi
