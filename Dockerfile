@@ -21,6 +21,8 @@ RUN git clone https://github.com/KaiyangZhou/deep-person-reid.git && \
     cd ../ && \
     rm -rf deep-person-reid
 
-# Install project dependencies
+# Install missing project dependencies
 COPY ${REQUIREMENTS} /tmp/requirements.txt
-RUN  pip install --user --no-warn-script-location -r /tmp/requirements.txt
+RUN pip freeze | sed s/=.*// > requirements.txt && \
+    diff /tmp/requirements.txt requirements.txt | grep "<" | sed "s/^< //" > requirements.txt && \
+    pip install --user --no-warn-script-location -r requirements.txt
