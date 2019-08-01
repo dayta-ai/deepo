@@ -89,7 +89,7 @@ docker build -t daytabase/ml_development .
 ### Other info
 1. Container name
 
-The suffix of container name indicate the index of container, you can multiple containers at the same time by run start.sh multiple times. ~~To do: make container index incremental~~
+The suffix of container name indicate the index of container, you can multiple containers at the same time by run start.sh multiple times. ~~To do: make container index incremental~~ If there are multiple developers sharing same linux user account, you should set the DEVELOPER_NAME variable.
 
 2. User password
 
@@ -99,6 +99,11 @@ The default password is docker, feel free to change it in the outer Dockerfile
 
 ~~Currently you have to add --privileged argument to docker run command in start.sh in order to use webcam~~
 Updated: no privileged is needed to access webcam from container
+
+4. Multiple GPUs
+
+If the host machine has multiple GPUs, you can specify the GPUs you want to use by setting GPU variable in the script. By default first one is chosen.
+
 
 ### Reference
 1. [Running a graphical app in a Docker container, on a remote server](https://blog.yadutaf.fr/2017/09/10/running-a-graphical-app-in-a-docker-container-on-a-remote-server/)
