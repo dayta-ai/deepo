@@ -1,6 +1,14 @@
+#!/bin/bash
+DEVELOPER_NAME="" # set your name when multiple developers using same linux user account
+GPU="0" # set GPU device, separate ids by,
+
 ML_CONTAINER_USERNAME="docker"
 ML_IMAGE_NAME="my_ml_dev"
 ML_CONTAINER_NAME="ml_container"
+if [ ! -z "$DEVELOPER_NAME" ]
+then
+    ML_CONTAINER_NAME=$DEVELOPER_NAME\_$ML_CONTAINER_NAME
+fi
 CURRENT_INDEX=$(docker ps -a --format '{{.Names}}' | \
               grep "^$ML_CONTAINER_NAME" | \
               sed -e "s/^$ML_CONTAINER_NAME\_//" | \
@@ -9,7 +17,7 @@ if [ -z "$CURRENT_INDEX" ]
 then
     CURRENT_INDEX=0
 else
-    CURRENT_INDEX=$((CURRENT_INDEX+1))
+    $((CURRENT_INDEX++))
 fi
 ML_CONTAINER_NAME=$ML_CONTAINER_NAME\_$CURRENT_INDEX
 SOURCE_CODE_DIR="github"
@@ -43,6 +51,7 @@ then
         -h ${ML_CONTAINER_NAME} \
         -e QT_X11_NO_MITSHM=1 \
         -e DISPLAY=unix${DISPLAY} \
+        -e CUDA_VISIBLE_DEVICES=${GPU} \
         -v /tmp/.X11-unix:/tmp/.X11-unix \
         -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR} \
         -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
@@ -57,6 +66,7 @@ then
         -h ${ML_CONTAINER_NAME} \
         -e QT_X11_NO_MITSHM=1 \
         -e DISPLAY=unix${DISPLAY} \
+        -e CUDA_VISIBLE_DEVICES=${GPU} \
         -v /tmp/.X11-unix:/tmp/.X11-unix \
         -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR} \
         -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
@@ -69,6 +79,7 @@ else
         -h ${ML_CONTAINER_NAME} \
         -e QT_X11_NO_MITSHM=1 \
         -e DISPLAY=unix${DISPLAY} \
+        -e CUDA_VISIBLE_DEVICES=${GPU} \
         -v /tmp/.X11-unix:/tmp/.X11-unix \
         -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR} \
         -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \

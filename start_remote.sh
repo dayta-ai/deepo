@@ -1,8 +1,15 @@
-#!/bin/sh
+#!/bin/bash
+DEVELOPER_NAME="" # set your name when multiple developers using same linux user account
+GPU="0" # set GPU device, separate ids by,
+
 ML_CONTAINER_DISPLAY="0"
 ML_CONTAINER_USERNAME="docker"
 ML_IMAGE_NAME="my_ml_dev"
 ML_CONTAINER_NAME="ml_container"
+if [ ! -z "$DEVELOPER_NAME" ]
+then
+    ML_CONTAINER_NAME=$DEVELOPER_NAME\_$ML_CONTAINER_NAME
+fi
 CURRENT_INDEX=$(docker ps -a --format '{{.Names}}' | \
               grep "^$ML_CONTAINER_NAME" | \
               sed -e "s/^$ML_CONTAINER_NAME\_//" | \
@@ -11,10 +18,9 @@ if [ -z "$CURRENT_INDEX" ]
 then
     CURRENT_INDEX=0
 else
-    CURRENT_INDEX=$((CURRENT_INDEX+1))
+    $((CURRENT_INDEX++))
 fi
 ML_CONTAINER_NAME=$ML_CONTAINER_NAME\_$CURRENT_INDEX
-echo $ML_CONTAINER_NAME
 SOURCE_CODE_DIR="github"
 PROJECT="DaytaBase"
 
@@ -68,6 +74,7 @@ then
         -h ${ML_CONTAINER_NAME} \
         -e QT_X11_NO_MITSHM=1 \
         -e DISPLAY=:${ML_CONTAINER_DISPLAY} \
+        -e CUDA_VISIBLE_DEVICES=${GPU} \
         -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR} \
         -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
         -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
@@ -83,6 +90,7 @@ then
         -h ${ML_CONTAINER_NAME} \
         -e QT_X11_NO_MITSHM=1 \
         -e DISPLAY=:${ML_CONTAINER_DISPLAY} \
+        -e CUDA_VISIBLE_DEVICES=${GPU} \
         -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR} \
         -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
         -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
@@ -96,6 +104,7 @@ else
         -h ${ML_CONTAINER_NAME} \
         -e QT_X11_NO_MITSHM=1 \
         -e DISPLAY=:${ML_CONTAINER_DISPLAY} \
+        -e CUDA_VISIBLE_DEVICES=${GPU} \
         -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR} \
         -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
         -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
