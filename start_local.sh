@@ -1,11 +1,51 @@
 #!/bin/bash
 
-# User defined variables
-DEVELOPER_NAME="" # set your name when multiple developers using same linux user account
-SOURCE_CODE_DIR="github"
-PROJECT="DaytaBase"
-GPU="0" # set GPU device, separate ids by,
+help(){
+    printf "script usage: $(basename $0) [-d name] [-s dir] [-p project] [-g IDs] [-j port] \n \
+    -d name : Name of developer(container username) (required) \n \
+    -s dir : Root path of source code (default: ~/github) \n \
+    -p project : Project name (directory) (default: DaytaBase) \n \
+    -g IDs : IDs of GPUs which are exposed to container , seperated by comma (default: 0) \n \
+    -j port : Port of jupyter notebook (default: 8888) \n \
+    " >&2
+    exit 1
+}
+
+# Default values
+SOURCE_CODE_DIR=${HOME}/github
+PROJECT=DaytaBase
+GPU=0
 JUPYTER_PORT=8888
+
+while getopts 'd:s:p:g:j:' OPTION; do
+    case "$OPTION" in
+    d)
+        DEVELOPER_NAME=$OPTARG
+        ;;
+    s)
+        SOURCE_CODE_DIR=$OPTARG
+        ;;
+    p)
+        PROJECT=$OPTARG
+        ;;
+    g)
+        GPU=$OPTARG
+        ;;
+    j)
+        JUPYTER_PORT=$OPTARG
+        ;;
+    ?)
+        help
+        ;;
+    esac
+done
+
+# Check if required argument is provided
+if [[ -z $DEVELOPER_NAME ]]
+then
+    echo "Missing argument -d name"
+    help
+fi
 
 # Define image name, conatiner name and container username
 if [ -z "$DEVELOPER_NAME" ]
@@ -35,7 +75,7 @@ ML_CONTAINER_NAME=$ML_CONTAINER_NAME\_$CURRENT_INDEX
 
 
 # Copy project requirements.txt to context
-cp ${HOME}/${SOURCE_CODE_DIR}/${PROJECT}/requirements.txt ./requirements.txt
+cp ${SOURCE_CODE_DIR}/${PROJECT}/requirements.txt ./requirements.txt
 
 # Build the image
 docker build \
@@ -64,10 +104,10 @@ then
         -e DISPLAY=unix${DISPLAY} \
         -e CUDA_VISIBLE_DEVICES=${GPU} \
         -v /tmp/.X11-unix:/tmp/.X11-unix \
-        -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR} \
+        -v ${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/workspace \
         -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
         -p ${JUPYTER_PORT}:8888 \
-        -w /home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR}/${PROJECT}  \
+        -w /home/${ML_CONTAINER_USERNAME}/workspace/${PROJECT}  \
         ${ML_IMAGE_NAME} bash
 elif [ $NUM_CAM = 1 ]
 then
@@ -81,10 +121,10 @@ then
         -e DISPLAY=unix${DISPLAY} \
         -e CUDA_VISIBLE_DEVICES=${GPU} \
         -v /tmp/.X11-unix:/tmp/.X11-unix \
-        -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR} \
+        -v ${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/workspace \
         -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
         -p ${JUPYTER_PORT}:8888 \
-        -w /home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR}/${PROJECT} \
+        -w /home/${ML_CONTAINER_USERNAME}/workspace/${PROJECT} \
         ${ML_IMAGE_NAME} bash    
 else
     docker run -it --rm \
@@ -96,9 +136,9 @@ else
         -e DISPLAY=unix${DISPLAY} \
         -e CUDA_VISIBLE_DEVICES=${GPU} \
         -v /tmp/.X11-unix:/tmp/.X11-unix \
-        -v ${HOME}/${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR} \
+        -v ${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/workspace \
         -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
         -p ${JUPYTER_PORT}:8888 \
-        -w /home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR}/${PROJECT}  \
+        -w /home/${ML_CONTAINER_USERNAME}/workspace/${PROJECT}  \
         ${ML_IMAGE_NAME} bash
 fi
