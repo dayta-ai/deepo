@@ -15,9 +15,6 @@ set X11UseLocalhost to no
 ```bash
 git clone https://github.com/dayta-ai/deepo.git
 ```
-4. Check variables in start.sh
-    1. Put your projects(code) in ```bash~/github``` folder or change the variable SOURCE_CODE_DIR
-    2. Check if PROJECT variable is set to your desire project name
 
 ### Prerequisite (Client)
 
@@ -31,7 +28,7 @@ chmod u+x start_local.sh
 ```
 2. Build docker image and run the container, the container will be removed after you exit from bash
 ```bash
-./start_local.sh
+./start_local.sh -d your_name
 ```
 
 ### How to use it locally with GUI(TLDR)
@@ -42,7 +39,7 @@ chmod u+x start_local.sh
 ```
 2. Build docker image and run the container, the container will be removed after you exit from bash
 ```bash
-./start_local.sh
+./start_local.sh -d your_name
 ```
 ### How to use it remotely with GUI(TLDR)
 1. ssh to your remote workstation with x11 forwarding flags
@@ -56,7 +53,7 @@ chmod u+x start_remote.sh
 ```
 3. Build docker image and run the container, the container will be removed after you exit from bash
 ```bash
-./start_remote.sh
+./start_remote.sh -d your_name
 ```
 
 ### Base image
@@ -88,8 +85,8 @@ docker build -t daytabase/ml_development .
 
 ### Other info
 1. Container name
-
-The suffix of container name indicate the index of container, you can multiple containers at the same time by run start.sh multiple times. ~~To do: make container index incremental~~ If there are multiple developers sharing same linux user account, you should set the DEVELOPER_NAME variable.
+*DeveloperName_Project_index*
+The suffix of container name indicate the index of container, you can multiple containers at the same time by run start.sh multiple times. ~~To do: make container index incremental~~ Containers from different developers are distinguished by the DEVELOPER_NAME prefix
 
 2. User password
 
