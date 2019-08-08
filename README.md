@@ -85,7 +85,9 @@ docker build -t daytabase/ml_development .
 
 ### Other info
 1. Container name
+
 *DeveloperName_Project_index*
+
 The suffix of container name indicate the index of container, you can multiple containers at the same time by run start.sh multiple times. ~~To do: make container index incremental~~ Containers from different developers are distinguished by the DEVELOPER_NAME prefix
 
 2. User password
