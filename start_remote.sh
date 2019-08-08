@@ -1,15 +1,27 @@
 #!/bin/bash
-DEVELOPER_NAME="" # set your name when multiple developers using same linux user account
-GPU="0" # set GPU device, separate ids by,
 
+# User defined variables
+DEVELOPER_NAME="Steve" # set your name when multiple developers using same linux user account
+GPU="0" # set GPU device, separate ids by,
+JUPYTER_PORT=8888
+SOURCE_CODE_DIR="github"
+PROJECT="DaytaBase"
 ML_CONTAINER_DISPLAY="0"
-ML_CONTAINER_USERNAME="docker"
-ML_IMAGE_NAME="my_ml_dev"
-ML_CONTAINER_NAME="ml_container"
-if [ ! -z "$DEVELOPER_NAME" ]
+
+# Define image name, conatiner name and container username
+if [ -z "$DEVELOPER_NAME" ]
 then
-    ML_CONTAINER_NAME=$DEVELOPER_NAME\_$ML_CONTAINER_NAME
+    ML_IMAGE_NAME=$PROJECT\_ENVIRONMENT
+    ML_CONTAINER_NAME=$PROJECT
+    ML_CONTAINER_USERNAME="docker"
+else
+    ML_IMAGE_NAME=$DEVELOPER_NAME\_$PROJECT\_ENVIRONMENT
+    ML_CONTAINER_NAME=$DEVELOPER_NAME\_$PROJECT
+    ML_CONTAINER_USERNAME=$DEVELOPER_NAME
 fi
+ML_IMAGE_NAME=${ML_IMAGE_NAME,,}
+
+# Add suffix to contain name
 CURRENT_INDEX=$(docker ps -a --format '{{.Names}}' | \
               grep "^$ML_CONTAINER_NAME" | \
               sed -e "s/^$ML_CONTAINER_NAME\_//" | \
@@ -21,8 +33,6 @@ else
     $((CURRENT_INDEX++))
 fi
 ML_CONTAINER_NAME=$ML_CONTAINER_NAME\_$CURRENT_INDEX
-SOURCE_CODE_DIR="github"
-PROJECT="DaytaBase"
 
 # Get the DISPLAY slot
 DISPLAY_NUMBER=$(echo $DISPLAY | cut -d. -f1 | cut -d: -f2)
@@ -79,6 +89,7 @@ then
         -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
         -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
         -v ${PWD}/.display_${DISPLAY_NUMBER}/Xauthority:/home/${ML_CONTAINER_USERNAME}/.Xauthority \
+        -w /home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR}/${PROJECT}  \
         ${ML_IMAGE_NAME} bash
 elif [ $NUM_CAM = 1 ]
 then
@@ -95,6 +106,7 @@ then
         -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
         -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
         -v ${PWD}/.display_${DISPLAY_NUMBER}/Xauthority:/home/${ML_CONTAINER_USERNAME}/.Xauthority \
+        -w /home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR}/${PROJECT}  \
         ${ML_IMAGE_NAME} bash
 else
     docker run -it --rm \
@@ -109,5 +121,6 @@ else
         -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
         -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
         -v ${PWD}/.display_${DISPLAY_NUMBER}/Xauthority:/home/${ML_CONTAINER_USERNAME}/.Xauthority \
+        -w /home/${ML_CONTAINER_USERNAME}/${SOURCE_CODE_DIR}/${PROJECT}  \
         ${ML_IMAGE_NAME} bash
 fi                
