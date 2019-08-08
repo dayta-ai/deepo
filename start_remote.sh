@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # User defined variables
-DEVELOPER_NAME="Steve" # set your name when multiple developers using same linux user account
-GPU="0" # set GPU device, separate ids by,
-JUPYTER_PORT=8888
+DEVELOPER_NAME="" # set your name when multiple developers using same linux user account
 SOURCE_CODE_DIR="github"
 PROJECT="DaytaBase"
+GPU="0" # set GPU device, separate ids by,
+JUPYTER_PORT=8888
 ML_CONTAINER_DISPLAY="0"
 
 # Define image name, conatiner name and container username
