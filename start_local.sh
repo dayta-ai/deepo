@@ -41,9 +41,16 @@ while getopts 'd:s:p:g:j:' OPTION; do
 done
 
 # Check if required argument is provided
-if [[ -z $DEVELOPER_NAME ]]
+if [ -z $DEVELOPER_NAME ]
 then
     echo "Missing argument -d name"
+    help
+fi
+
+# Check if project folder exists
+if [ ! -d "${SOURCE_CODE_DIR}/${PROJECT}/" ]
+then
+    printf "Project folder ${SOURCE_CODE_DIR}/${PROJECT}/ does not exist, please check the arguments \n"
     help
 fi
 
@@ -74,8 +81,13 @@ fi
 ML_CONTAINER_NAME=$ML_CONTAINER_NAME\_$CURRENT_INDEX
 
 
-# Copy project requirements.txt to context
-cp ${SOURCE_CODE_DIR}/${PROJECT}/requirements.txt ./requirements.txt
+# Copy project requirements.txt to context, if it does not exist, create an empty requirements.txt
+if [ -f "${SOURCE_CODE_DIR}/${PROJECT}/requirements.txt" ]
+then
+    cp ${SOURCE_CODE_DIR}/${PROJECT}/requirements.txt ./requirements.txt
+else
+    touch ./requirements.txt
+fi
 
 # Build the image
 docker build \
@@ -91,7 +103,7 @@ rm ./requirements.txt
 NUM_CAM=$(ls -dl /dev/video* | grep '^c' | wc -l)
 
 # Launch the container
-if [ $NUM_CAM = 2 ]
+if [ $NUM_CAM -ge 2 ]
 then
     docker run -it --rm \
         --name ${ML_CONTAINER_NAME} \

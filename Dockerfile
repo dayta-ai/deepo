@@ -1,13 +1,22 @@
+# ==================================================================
+# base image
+# ------------------------------------------------------------------
 FROM dayta/ml_development:latest
 
+# ==================================================================
+# common dependencies
+# ------------------------------------------------------------------
 # Install torchreid
 RUN git clone https://github.com/KaiyangZhou/deep-person-reid.git && \
     cd deep-person-reid && \
     pip install --no-warn-script-location -r requirements.txt && \
-    python setup.py install --user && \
+    python setup.py install && \
     cd ../ && \
     rm -rf deep-person-reid
 
+# ==================================================================
+# user space
+# ------------------------------------------------------------------
 ARG USERNAME
 ARG USER_ID
 ARG GROUP_ID
@@ -22,6 +31,9 @@ WORKDIR /home/${USERNAME}
 # Create pytorch cache directory
 RUN mkdir -p .cache/torch
 
+# ==================================================================
+# project dependencies
+# ------------------------------------------------------------------
 # Install missing project dependencies
 COPY ${REQUIREMENTS} /tmp/requirements.txt
 RUN pip freeze | sed s/=.*// > requirements.txt && \
