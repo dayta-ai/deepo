@@ -6,7 +6,7 @@
 # mxnet         latest (pip)
 # onnx          latest (pip)
 # pylint        latest (pip)
-# pytorch       1.1    (pip)
+# pytorch       1.2    (pip)
 # sklearn       latest (pip)
 # tensorflow    1.14   (pip)
 # apex          latest (git)
@@ -146,17 +146,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # pytorch
 # ------------------------------------------------------------------
 
-    $PIP_INSTALL \
-        future \
-        numpy \
-        protobuf \
-        enum34 \
-        pyyaml \
-        typing \
-    	torch \
-        && \
-    $PIP_INSTALL https://download.pytorch.org/whl/cu100/torch-1.1.0-cp37-cp37m-linux_x86_64.whl && \
-    $PIP_INSTALL https://download.pytorch.org/whl/cu100/torchvision-0.3.0-cp37-cp37m-linux_x86_64.whl && \
+    $PIP_INSTALL torch==1.2 torchvision==0.4 && \
 
 # ==================================================================
 # sklearn
