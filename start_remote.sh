@@ -54,7 +54,8 @@ then
     help
 fi
 
-# Define image name, conatiner name and container username
+# Define image name, conatiner name and container username, container display number
+ML_CONTAINER_DISPLAY="0"
 if [ -z "$DEVELOPER_NAME" ]
 then
     ML_IMAGE_NAME=$PROJECT\_ENVIRONMENT
@@ -112,7 +113,6 @@ if [ -z "$AUTH_COOKIE" ]
 then
     AUTH_COOKIE=$(xauth list | grep "^$(hostname)/unix:${DISPLAY_NUMBER} " | awk '{print $3}')
 fi
-echo $AUTH_COOKIE
 
 # Create the new X Authority file
 xauth -v -f .display_${DISPLAY_NUMBER}/Xauthority add ${ML_CONTAINER_NAME}/unix:${ML_CONTAINER_DISPLAY} MIT-MAGIC-COOKIE-1 ${AUTH_COOKIE}
