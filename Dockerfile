@@ -3,12 +3,16 @@
 # ------------------------------------------------------------------
 FROM dayta/ml_development:latest
 
+# Get existing python package list
+RUN pip freeze | sed s/=.*// > /tmp/existing_requirements.txt
+
 # ==================================================================
 # common dependencies
 # ------------------------------------------------------------------
 # Install torchreid
 RUN git clone https://github.com/KaiyangZhou/deep-person-reid.git && \
     cd deep-person-reid && \
+    diff requirements.txt /tmp/existing_requirements.txt | grep "<" | sed "s/^< //" > requirements.txt && \
     pip install --no-warn-script-location -r requirements.txt && \
     python setup.py install && \
     cd ../ && \
@@ -36,6 +40,6 @@ RUN mkdir -p .cache/torch
 # ------------------------------------------------------------------
 # Install missing project dependencies
 COPY ${REQUIREMENTS} /tmp/requirements.txt
-RUN pip freeze | sed s/=.*// > requirements.txt && \
-    diff /tmp/requirements.txt requirements.txt | grep "<" | sed "s/^< //" > requirements.txt && \
-    pip install --user --no-warn-script-location -r requirements.txt
+RUN diff /tmp/requirements.txt /tmp/existing_requirements.txt | grep "<" | sed "s/^< //" > requirements.txt && \
+    pip install --user --no-warn-script-location -r requirements.txt && \
+    rm requirements.txt
