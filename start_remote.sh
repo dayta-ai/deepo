@@ -120,58 +120,28 @@ xauth -v -f .display_${DISPLAY_NUMBER}/Xauthority add ${ML_CONTAINER_NAME}/unix:
 # Proxy with the :0 DISPLAY
 socat -d -d -d TCP4:localhost:60${DISPLAY_NUMBER} UNIX-LISTEN:.display_${DISPLAY_NUMBER}/socket/X${ML_CONTAINER_DISPLAY} > socat.log 2>&1 &
 
-#check number of camera device
-NUM_CAM=$(ls -dl /dev/video* | grep '^c' | wc -l)
+# Get all cameras
+CAMS=""
+for CAM in /dev/video*
+do
+    [ -e "$CAM" ] || continue
+    CAMS="$CAMS --device $CAM:$CAM"
+done
+echo "Available cameras: $CAMS"
 
 # Launch the container
-if [ $NUM_CAM -ge 2 ]
-then
-    docker run -it --rm \
-        --name ${ML_CONTAINER_NAME} \
-        --hostname ${ML_CONTAINER_NAME} \
-        --runtime nvidia \
-        --device /dev/video0:/dev/video0 \
-        --device /dev/video1:/dev/video1 \
-        -h ${ML_CONTAINER_NAME} \
-        -e QT_X11_NO_MITSHM=1 \
-        -e DISPLAY=:${ML_CONTAINER_DISPLAY} \
-        -e CUDA_VISIBLE_DEVICES=${GPU} \
-        -v ${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/workspace \
-        -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
-        -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
-        -v ${PWD}/.display_${DISPLAY_NUMBER}/Xauthority:/home/${ML_CONTAINER_USERNAME}/.Xauthority \
-        -w /home/${ML_CONTAINER_USERNAME}/workspace/${PROJECT}  \
-        ${ML_IMAGE_NAME} bash
-elif [ $NUM_CAM = 1 ]
-then
-    docker run -it --rm \
-        --name ${ML_CONTAINER_NAME} \
-        --hostname ${ML_CONTAINER_NAME} \
-        --runtime nvidia \
-        --device /dev/video0:/dev/video0 \
-        -h ${ML_CONTAINER_NAME} \
-        -e QT_X11_NO_MITSHM=1 \
-        -e DISPLAY=:${ML_CONTAINER_DISPLAY} \
-        -e CUDA_VISIBLE_DEVICES=${GPU} \
-        -v ${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/workspace \
-        -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
-        -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
-        -v ${PWD}/.display_${DISPLAY_NUMBER}/Xauthority:/home/${ML_CONTAINER_USERNAME}/.Xauthority \
-        -w /home/${ML_CONTAINER_USERNAME}/workspace/${PROJECT}  \
-        ${ML_IMAGE_NAME} bash
-else
-    docker run -it --rm \
-        --name ${ML_CONTAINER_NAME} \
-        --hostname ${ML_CONTAINER_NAME} \
-        --runtime nvidia \
-        -h ${ML_CONTAINER_NAME} \
-        -e QT_X11_NO_MITSHM=1 \
-        -e DISPLAY=:${ML_CONTAINER_DISPLAY} \
-        -e CUDA_VISIBLE_DEVICES=${GPU} \
-        -v ${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/workspace \
-        -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
-        -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
-        -v ${PWD}/.display_${DISPLAY_NUMBER}/Xauthority:/home/${ML_CONTAINER_USERNAME}/.Xauthority \
-        -w /home/${ML_CONTAINER_USERNAME}/workspace/${PROJECT}  \
-        ${ML_IMAGE_NAME} bash
-fi                
+docker run -it --rm \
+    --name ${ML_CONTAINER_NAME} \
+    --hostname ${ML_CONTAINER_NAME} \
+    --runtime nvidia \
+    ${CAMS} \
+    -h ${ML_CONTAINER_NAME} \
+    -e QT_X11_NO_MITSHM=1 \
+    -e DISPLAY=:${ML_CONTAINER_DISPLAY} \
+    -e CUDA_VISIBLE_DEVICES=${GPU} \
+    -v ${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/workspace \
+    -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
+    -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
+    -v ${PWD}/.display_${DISPLAY_NUMBER}/Xauthority:/home/${ML_CONTAINER_USERNAME}/.Xauthority \
+    -w /home/${ML_CONTAINER_USERNAME}/workspace/${PROJECT}  \
+    ${ML_IMAGE_NAME} bash
