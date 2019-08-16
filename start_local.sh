@@ -108,6 +108,14 @@ do
 done
 echo "Available cameras: $CAMS"
 
+# Get network drives
+N_DRIVES=""
+for N_DRIVE in /mnt/network_drive*
+do
+    [ -e "$N_DRIVE" ] || continue
+    CAMS="$N_DRIVES -v $N_DRIVE:$N_DRIVE"
+done
+
 # Launch the container
 docker run -it --rm \
     --name ${ML_CONTAINER_NAME} \
@@ -121,6 +129,8 @@ docker run -it --rm \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v ${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/workspace \
     -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
+    -v /media/daytaset:/home/${ML_CONTAINER_USERNAME}/daytaset \
+    ${N_DRIVES} \
     -p ${JUPYTER_PORT}:8888 \
     -w /home/${ML_CONTAINER_USERNAME}/workspace/${PROJECT}  \
     ${ML_IMAGE_NAME} bash
