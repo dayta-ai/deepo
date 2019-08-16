@@ -134,7 +134,7 @@ N_DRIVES=""
 for N_DRIVE in /mnt/network_drive*
 do
     [ -e "$N_DRIVE" ] || continue
-    CAMS="$N_DRIVES -v $N_DRIVE:$N_DRIVE"
+    N_DRIVES="$N_DRIVES -v $N_DRIVE:$N_DRIVE"
 done
 
 # Launch the container
