@@ -10,6 +10,7 @@
 # sklearn       latest (pip)
 # tensorflow    1.14   (pip)
 # apex          latest (git)
+# jupyterlab    latest (pip)
 # keras         latest (pip)
 # opencv        4.0.1  (git)
 # ==================================================================
@@ -45,6 +46,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         htop \
         sudo \
         nano \
+        net-tools \
         && \
 
     $GIT_CLONE https://github.com/Kitware/CMake ~/cmake && \
@@ -171,6 +173,14 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     $GIT_CLONE https://github.com/NVIDIA/apex.git && \
     cd apex && \
     pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./  && \
+
+# ==================================================================
+# jupyterlab
+# ------------------------------------------------------------------
+
+    $PIP_INSTALL \
+        jupyterlab \
+        && \
 
 # ==================================================================
 # keras
