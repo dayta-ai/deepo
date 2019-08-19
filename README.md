@@ -1,5 +1,11 @@
 This repo is a fork to the modular docker machine learning environment [deepo](https://github.com/ufoym/deepo) which add extra functions include ffmpeg support to opencv, remote server x11 forwarding, better user permission management and more python modules. Keep in mind that not all functions are tested.
 
+## Usecases
+![Usecases](https://raw.githubusercontent.com/dayta-ai/deepo/master/images/usecases.jpg)
+
+
+## How to use
+
 ### Prerequisite (docker host os)
 1. Socat (For remote usage)
 ```bash
@@ -56,6 +62,9 @@ chmod u+x start_remote.sh
 ./start_remote.sh -d your_name
 ```
 
+## Docker Image
+![Docker Image Layer](https://raw.githubusercontent.com/dayta-ai/deepo/master/images/layers.jpg)
+
 ### Base image
 By default, the base docker image is prebuild by us and host by [dockerhub](https://hub.docker.com/r/dayta/ml_development), here are the included libraries and tools
 1. ubuntu 18.04
@@ -97,11 +106,15 @@ The default password is docker, feel free to change it in the outer Dockerfile
 3. Webcam
 
 ~~Currently you have to add --privileged argument to docker run command in start.sh in order to use webcam~~
-Updated: no privileged is needed to access webcam from container
+Updated: no privileged is needed to access webcam from container, all webcams under /dev/ will be mounted
 
 4. Multiple GPUs
 
 If the host machine has multiple GPUs, you can specify the GPUs you want to use by setting GPU variable in the script. By default first one is chosen.
+
+5. Initialization script
+
+An initilaization script(scripts/init.sh) is used to run commands when the container starts. For example, Jupyter notebook is automatically started with the container. Each container is associated with an unique jupyter notebook port, starting from 8888.
 
 
 ### Reference
