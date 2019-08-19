@@ -25,6 +25,7 @@ class Tools(Module):
                 htop \
                 sudo \
                 nano \
+                net-tools \
                 && \
 
             $GIT_CLONE https://github.com/Kitware/CMake ~/cmake && \
