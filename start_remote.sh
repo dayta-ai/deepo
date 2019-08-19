@@ -113,7 +113,9 @@ else
 fi
 
 # Build the image
+echo "Building docker image, please wait..."
 docker build \
+    --quiet \
     -t ${ML_IMAGE_NAME} \
     --build-arg USERNAME=${ML_CONTAINER_USERNAME} \
     --build-arg USER_ID=$(id -u) \
