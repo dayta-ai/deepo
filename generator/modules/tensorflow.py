@@ -22,7 +22,3 @@ class Tensorflow(Module):
                 && \
         ''' % tensorflow_version
 
-    def expose(self):
-        return [
-            6006,  # expose port for TensorBoard
-        ]

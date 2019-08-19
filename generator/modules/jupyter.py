@@ -13,8 +13,3 @@ class Jupyter(Module):
                 jupyter \
                 && \
         '''
-
-    def expose(self):
-        return [
-            8888,  # expose port for jupyter
-        ]
