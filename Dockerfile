@@ -26,6 +26,7 @@ ARG USERNAME
 ARG USER_ID
 ARG GROUP_ID
 ARG REQUIREMENTS
+ARG INIT_SCRIPT
 
 # Create User which has the same user id as host user 
 RUN groupadd -g ${GROUP_ID} ${USERNAME} && \
@@ -41,6 +42,8 @@ RUN mkdir -p .cache/torch
 # ------------------------------------------------------------------
 # Install missing project dependencies
 COPY ${REQUIREMENTS} /tmp/requirements.txt
+COPY ${INIT_SCRIPT} /tmp/init.sh
+RUN cp /tmp/init.sh /home/${USERNAME}/init.sh && chmod u+x /home/${USERNAME}/init.sh
 RUN diff /tmp/requirements.txt /tmp/existing_requirements.txt | grep "<" | sed "s/^< //" > requirements.txt && \
     pip install --user --no-warn-script-location -r requirements.txt && \
     rm requirements.txt

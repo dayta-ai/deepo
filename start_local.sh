@@ -6,18 +6,42 @@ help(){
     -s dir : Root path of source code (default: ~/github) \n \
     -p project : Project name (directory) (default: DaytaBase) \n \
     -g IDs : IDs of GPUs which are exposed to container , seperated by comma (default: 0) \n \
-    -j port : Port of jupyter notebook (default: 8888) \n \
     " >&2
     exit 1
+}
+
+find_next_available(){
+    find_next_available_ret=$1
+    checked=false
+    shift
+    for item in $(printf '%s\n' "$@" | grep '^[0-9]\+$' | sort)
+    do
+        if [ "$checked" = true ]
+        then
+            if [ "$find_next_available_ret" = "$item" ]
+            then
+                ((find_next_available_ret++))
+            else
+                break            
+            fi
+        elif [ "$item" = "$find_next_available_ret" ]
+        then
+            checked=true
+            ((find_next_available_ret++))
+        fi
+    done
 }
 
 # Default values
 SOURCE_CODE_DIR=${HOME}/github
 PROJECT=DaytaBase
 GPU=0
+
+# Constants
+TENSORBOARD_PORT=6006
 JUPYTER_PORT=8888
 
-while getopts 'd:s:p:g:j:' OPTION; do
+while getopts 'd:s:p:g:' OPTION; do
     case "$OPTION" in
     d)
         DEVELOPER_NAME=$OPTARG
@@ -30,9 +54,6 @@ while getopts 'd:s:p:g:j:' OPTION; do
         ;;
     g)
         GPU=$OPTARG
-        ;;
-    j)
-        JUPYTER_PORT=$OPTARG
         ;;
     ?)
         help
@@ -68,16 +89,10 @@ fi
 ML_IMAGE_NAME=${ML_IMAGE_NAME,,}
 
 # Add suffix to contain name
-CURRENT_INDEX=$(docker ps -a --format '{{.Names}}' | \
-              grep "^$ML_CONTAINER_NAME" | \
-              sed -e "s/^$ML_CONTAINER_NAME\_//" | \
-              sort -r | head -n 1)
-if [ -z "$CURRENT_INDEX" ]
-then
-    CURRENT_INDEX=0
-else
-    $((CURRENT_INDEX++))
-fi
+find_next_available 0 $(docker ps -a --format '{{.Names}}' | \
+                      grep "^$ML_CONTAINER_NAME" | \
+                      sed -e "s/^$ML_CONTAINER_NAME\_//")
+CURRENT_INDEX=$find_next_available_ret
 ML_CONTAINER_NAME=$ML_CONTAINER_NAME\_$CURRENT_INDEX
 
 
@@ -90,13 +105,15 @@ else
 fi
 
 # Build the image
+echo "Building docker image, please wait..."
 docker build \
+    --quiet \
     -t ${ML_IMAGE_NAME} \
     --build-arg USERNAME=${ML_CONTAINER_USERNAME} \
     --build-arg USER_ID=$(id -u) \
     --build-arg GROUP_ID=$(id -g) \
-    --build-arg REQUIREMENTS=requirements.txt .
-
+    --build-arg REQUIREMENTS=requirements.txt \
+    --build-arg INIT_SCRIPT=scripts/init.sh .
 rm ./requirements.txt
 
 # Get all cameras
@@ -116,6 +133,21 @@ do
     N_DRIVES="$N_DRIVES -v $N_DRIVE:$N_DRIVE"
 done
 
+# Get jupyter port
+find_next_available $JUPYTER_PORT $(docker ps --format {{.Ports}} | \
+                         tr , '\n' | \
+                         awk '{$1=$1};1'| \
+                         sed "s/\(.*\)->\(.*\)\/tcp/\2/" )
+JUPYTER_PORT=$find_next_available_ret
+echo "The Jupyter Notebook is running at: http://localhost:${JUPYTER_PORT}?token=daytaai"
+
+# Get tensorboard port
+find_next_available $TENSORBOARD_PORT $(docker ps --format {{.Ports}} | \
+                         tr , '\n' | \
+                         awk '{$1=$1};1'| \
+                         sed "s/\(.*\)->\(.*\)\/tcp/\2/" )
+TENSORBOARD_PORT=$find_next_available_ret
+
 # Launch the container
 docker run -it --rm \
     --name ${ML_CONTAINER_NAME} \
@@ -126,10 +158,13 @@ docker run -it --rm \
     -e QT_X11_NO_MITSHM=1 \
     -e DISPLAY=unix${DISPLAY} \
     -e CUDA_VISIBLE_DEVICES=${GPU} \
+    -e TENSORBOARD_PORT=${TENSORBOARD_PORT} \
+    -e JUPYTER_PORT=${JUPYTER_PORT} \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v ${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/workspace \
     -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
     ${N_DRIVES} \
-    -p ${JUPYTER_PORT}:8888 \
+    -p ${TENSORBOARD_PORT}:${TENSORBOARD_PORT} \
+    -p ${JUPYTER_PORT}:${JUPYTER_PORT} \
     -w /home/${ML_CONTAINER_USERNAME}/workspace/${PROJECT}  \
-    ${ML_IMAGE_NAME} bash
+    ${ML_IMAGE_NAME} /home/${ML_CONTAINER_USERNAME}/init.sh

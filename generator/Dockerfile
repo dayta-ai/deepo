@@ -250,5 +250,3 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     apt-get autoremove && \
     rm -rf /var/lib/apt/lists/* /tmp/* ~/* && \
     echo "root:docker" | chpasswd
-
-EXPOSE 8888 6006
