@@ -71,13 +71,14 @@ By default, the base docker image is prebuild by us and host by [dockerhub](http
 2. cuda 10.0 and cudnn 7
 3. python 3.7
 4. opencv with ffmpeg support
-5. pytorch 1.1 & apex
-6. jupyer
+5. pytorch 1.1 + torchvision 0.3 / pytorch 1.2 + torchvision 0.4  & apex
+6. jupyer and jupyter lab
 7. tensorflow 1.14 & keras
 8. mxnet
 9. sklearn
 10. onnx
 11. vim and nano
+12. net-tools
 
 #### Update base image
 ```bash
