@@ -89,8 +89,8 @@ docker pull dayta/ml_developmen:latest
 Please follow the guide from original deepo repo
 ```bash
 cd generator
-python generate.py Dockerfile python==3.7 pytorch==1.1 apex jupyter tensorflow==1.14 keras onnx opencv sklearn pylint mxnet --ubuntu-ver 18.04 --cuda-ver 10.0 --cudnn-ver 7
-docker build -t daytabase/ml_development .
+python generate.py Dockerfile python==3.7 pytorch==1.2 apex jupyter jupyterlab tensorflow==1.14 keras onnx opencv sklearn pylint mxnet --ubuntu-ver 18.04 --cuda-ver 10.0 --cudnn-ver 7
+docker build -t dayta/ml_development:latest .
 ```
 
 ### Other info
