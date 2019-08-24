@@ -32,6 +32,9 @@ find_next_available(){
     done
 }
 
+# Get deepo path
+SCRIPTPATH=$(dirname $(realpath $0))
+
 # Default values
 SOURCE_CODE_DIR=${HOME}/github
 PROJECT=DaytaBase
@@ -95,7 +98,6 @@ find_next_available 0 $(docker ps -a --format '{{.Names}}' | \
 CURRENT_INDEX=$find_next_available_ret
 ML_CONTAINER_NAME=$ML_CONTAINER_NAME\_$CURRENT_INDEX
 
-
 # Copy project requirements.txt to context, if it does not exist, create an empty requirements.txt
 if [ -f "${SOURCE_CODE_DIR}/${PROJECT}/requirements.txt" ]
 then
@@ -133,6 +135,9 @@ do
     N_DRIVES="$N_DRIVES -v $N_DRIVE:$N_DRIVE"
 done
 
+# Create Jupyter directory
+mkdir -p ${SCRIPTPATH}/User_${ML_CONTAINER_USERNAME}/.jupyter
+
 # Get jupyter port
 find_next_available $JUPYTER_PORT $(docker ps --format {{.Ports}} | \
                          tr , '\n' | \
@@ -163,6 +168,7 @@ docker run -it --rm \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v ${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/workspace \
     -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
+    -v ${SCRIPTPATH}/User_${ML_CONTAINER_USERNAME}/.jupyter:/home/${ML_CONTAINER_USERNAME}/.jupyter \
     ${N_DRIVES} \
     -p ${TENSORBOARD_PORT}:${TENSORBOARD_PORT} \
     -p ${JUPYTER_PORT}:${JUPYTER_PORT} \
