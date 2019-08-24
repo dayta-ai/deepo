@@ -6,6 +6,7 @@ help(){
     -s dir : Root path of source code (default: ~/github) \n \
     -p project : Project name (directory) (default: DaytaBase) \n \
     -g IDs : IDs of GPUs which are exposed to container , seperated by comma (default: 0) \n \
+    -m amount : share memory size (default: 2g) \n \
     " >&2
     exit 1
 }
@@ -39,12 +40,13 @@ SCRIPTPATH=$(dirname $(realpath $0))
 SOURCE_CODE_DIR=${HOME}/github
 PROJECT=DaytaBase
 GPU=0
+SHM_SIZE=2g
 
 # Constants
 TENSORBOARD_PORT=6006
 JUPYTER_PORT=8888
 
-while getopts 'd:s:p:g:' OPTION; do
+while getopts 'd:s:p:g:m:' OPTION; do
     case "$OPTION" in
     d)
         DEVELOPER_NAME=$OPTARG
@@ -58,6 +60,9 @@ while getopts 'd:s:p:g:' OPTION; do
     g)
         GPU=$OPTARG
         ;;
+    m)
+        SHM_SIZE=$OPTARG
+        ;;        
     ?)
         help
         ;;
@@ -158,6 +163,7 @@ docker run -it --rm \
     --name ${ML_CONTAINER_NAME} \
     --hostname ${ML_CONTAINER_NAME} \
     --runtime nvidia \
+    --shm-size=${SHM_SIZE} \
     ${CAMS} \
     -h ${ML_CONTAINER_NAME} \
     -e QT_X11_NO_MITSHM=1 \
