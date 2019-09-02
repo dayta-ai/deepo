@@ -128,9 +128,11 @@ chmod u+x scripts/version_compare
 DOCKER_VERSION=$(docker --version | sed 's/^Docker version //; s/,.*//')
 if [ $(./scripts/version_compare $DOCKER_VERSION 19.03) -gt 0 ]
 then
+    # Expose specified gpus to container (Docker version >= 19.03)
     GPU_ARG='--gpus "device='${GPU}'"'
 else
-    GPU_ARG="--runtime=nvidia"
+    # Expose all gpus to container and asign specified gpus by environment variable (Docker version < 19.03)
+    GPU_ARG="--runtime=nvidia -e CUDA_VISIBLE_DEVICES=${GPU}"
 fi
 
 # Get all cameras
@@ -178,7 +180,6 @@ docker run -it --rm \
     -h ${ML_CONTAINER_NAME} \
     -e QT_X11_NO_MITSHM=1 \
     -e DISPLAY=unix${DISPLAY} \
-    -e CUDA_VISIBLE_DEVICES=${GPU} \
     -e TENSORBOARD_PORT=${TENSORBOARD_PORT} \
     -e JUPYTER_PORT=${JUPYTER_PORT} \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
