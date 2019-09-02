@@ -129,8 +129,6 @@ DOCKER_VERSION=$(docker --version | sed 's/^Docker version //; s/,.*//')
 if [ $(./scripts/version_compare $DOCKER_VERSION 19.03) -gt 0 ]
 then
     GPU_ARG='--gpus "device='${GPU}'"'
-    echo $GPU_ARG
-    
 else
     GPU_ARG="--runtime=nvidia"
 fi
