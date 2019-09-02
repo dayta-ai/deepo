@@ -123,6 +123,18 @@ docker build \
     --build-arg INIT_SCRIPT=scripts/init.sh .
 rm ./requirements.txt
 
+# Determine docker run gpu arguments by docker version
+chmod u+x scripts/version_compare
+DOCKER_VERSION=$(docker --version | sed 's/^Docker version //; s/,.*//')
+if [ $(./scripts/version_compare $DOCKER_VERSION 19.03) -gt 0 ]
+then
+    GPU_ARG='--gpus "device='${GPU}'"'
+    echo $GPU_ARG
+    
+else
+    GPU_ARG="--runtime=nvidia"
+fi
+
 # Get all cameras
 CAMS=""
 for CAM in /dev/video*
@@ -162,8 +174,8 @@ TENSORBOARD_PORT=$find_next_available_ret
 docker run -it --rm \
     --name ${ML_CONTAINER_NAME} \
     --hostname ${ML_CONTAINER_NAME} \
-    --runtime nvidia \
     --shm-size=${SHM_SIZE} \
+    ${GPU_ARG} \
     ${CAMS} \
     -h ${ML_CONTAINER_NAME} \
     -e QT_X11_NO_MITSHM=1 \
