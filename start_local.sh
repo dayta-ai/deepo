@@ -1,12 +1,13 @@
 #!/bin/bash
 
 help(){
-    printf "script usage: $(basename $0) [-d name] [-s dir] [-p project] [-g IDs] [-j port] \n \
+    printf "script usage: $(basename $0) [-d name] [-s dir] [-p project] [-g IDs] [-m amount] [-e port] \n \
     -d name : Name of developer(container username) (required) \n \
     -s dir : Root path of source code (default: ~/github) \n \
     -p project : Project name (directory) (default: DaytaBase) \n \
     -g IDs : IDs of GPUs which are exposed to container , seperated by comma (default: 0) \n \
     -m amount : share memory size (default: 2g) \n \
+    -e exposed port : expose extra port, can be a port number or a range of port number \n \
     " >&2
     exit 1
 }
@@ -41,12 +42,13 @@ SOURCE_CODE_DIR=${HOME}/github
 PROJECT=DaytaBase
 GPU=0
 SHM_SIZE=2g
+EXPOSED_PORT=''
 
 # Constants
 TENSORBOARD_PORT=6006
 JUPYTER_PORT=8888
 
-while getopts 'd:s:p:g:m:' OPTION; do
+while getopts 'd:s:p:g:m:e:' OPTION; do
     case "$OPTION" in
     d)
         DEVELOPER_NAME=$OPTARG
@@ -62,7 +64,10 @@ while getopts 'd:s:p:g:m:' OPTION; do
         ;;
     m)
         SHM_SIZE=$OPTARG
-        ;;        
+        ;; 
+    e)
+        EXPOSED_PORT=$OPTARG
+        ;;                 
     ?)
         help
         ;;
@@ -84,16 +89,9 @@ then
 fi
 
 # Define image name, conatiner name and container username
-if [ -z "$DEVELOPER_NAME" ]
-then
-    ML_IMAGE_NAME=$PROJECT\_ENVIRONMENT
-    ML_CONTAINER_NAME=$PROJECT
-    ML_CONTAINER_USERNAME="docker"
-else
-    ML_IMAGE_NAME=$DEVELOPER_NAME\_$PROJECT\_ENVIRONMENT
-    ML_CONTAINER_NAME=$DEVELOPER_NAME\_$PROJECT
-    ML_CONTAINER_USERNAME=$DEVELOPER_NAME
-fi
+ML_IMAGE_NAME=$DEVELOPER_NAME\_$PROJECT\_ENVIRONMENT
+ML_CONTAINER_NAME=$DEVELOPER_NAME\_$PROJECT
+ML_CONTAINER_USERNAME=$DEVELOPER_NAME
 ML_IMAGE_NAME=${ML_IMAGE_NAME,,}
 
 # Add suffix to contain name
@@ -170,6 +168,12 @@ find_next_available $TENSORBOARD_PORT $(docker ps --format {{.Ports}} | \
                          sed "s/\(.*\)->\(.*\)\/tcp/\2/" )
 TENSORBOARD_PORT=$find_next_available_ret
 
+# Expose extra port
+if [ ! -z $EXPOSED_PORT ]
+then
+    EXPOSED_PORT="-p $EXPOSED_PORT:$EXPOSED_PORT"
+fi 
+
 # Launch the container
 docker run -it --rm \
     --name ${ML_CONTAINER_NAME} \
@@ -189,5 +193,6 @@ docker run -it --rm \
     ${N_DRIVES} \
     -p ${TENSORBOARD_PORT}:${TENSORBOARD_PORT} \
     -p ${JUPYTER_PORT}:${JUPYTER_PORT} \
+    ${EXPOSED_PORT} \
     -w /home/${ML_CONTAINER_USERNAME}/workspace/${PROJECT}  \
     ${ML_IMAGE_NAME} /home/${ML_CONTAINER_USERNAME}/init.sh
