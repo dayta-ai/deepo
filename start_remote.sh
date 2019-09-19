@@ -209,6 +209,7 @@ docker run -it --rm \
     -e DISPLAY=:${ML_CONTAINER_DISPLAY} \
     -e TENSORBOARD_PORT=${TENSORBOARD_PORT} \
     -e JUPYTER_PORT=${JUPYTER_PORT} \
+    -v ${HOME}/.aws:/home/${ML_CONTAINER_USERNAME}/.aws \
     -v ${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/workspace \
     -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
     -v ${PWD}/.display_${DISPLAY_NUMBER}/socket:/tmp/.X11-unix \
