@@ -8,6 +8,7 @@ help(){
     -g IDs : IDs of GPUs which are exposed to container , seperated by comma (default: 0) \n \
     -m amount : share memory size (default: 2g) \n \
     -e exposed port : expose extra port, can be a port number or a range of port number \n \
+    -i init script : starting script \n \    
     " >&2
     exit 1
 }
@@ -43,12 +44,13 @@ PROJECT=DaytaBase
 GPU=0
 SHM_SIZE=2g
 EXPOSED_PORT=''
+STARTUP_SCRIPT=scripts/init.sh
 
 # Constants
 TENSORBOARD_PORT=6006
 JUPYTER_PORT=8888
 
-while getopts 'd:s:p:g:m:e:' OPTION; do
+while getopts 'd:s:p:g:m:e:i:' OPTION; do
     case "$OPTION" in
     d)
         DEVELOPER_NAME=$OPTARG
@@ -67,7 +69,10 @@ while getopts 'd:s:p:g:m:e:' OPTION; do
         ;; 
     e)
         EXPOSED_PORT=$OPTARG
-        ;;                 
+        ;;          
+    i)
+        STARTUP_SCRIPT=$OPTARG
+        ;;         
     ?)
         help
         ;;
@@ -127,7 +132,7 @@ docker build \
     --build-arg USER_ID=$(id -u) \
     --build-arg GROUP_ID=$(id -g) \
     --build-arg REQUIREMENTS=requirements.txt \
-    --build-arg INIT_SCRIPT=scripts/init.sh .
+    --build-arg INIT_SCRIPT=${STARTUP_SCRIPT} .
 
 rm ./requirements.txt
 
