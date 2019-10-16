@@ -16,9 +16,7 @@ class Python(Module):
     def build(self):
         return (
             r'''
-            DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
-                software-properties-common \
-                && \
+            DEBIAN_FRONTEND=noninteractive \
             add-apt-repository ppa:deadsnakes/ppa && \
             apt-get update && \
             DEBIAN_FRONTEND=noninteractive $APT_INSTALL \

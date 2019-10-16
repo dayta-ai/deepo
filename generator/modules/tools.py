@@ -13,6 +13,7 @@ class Tools(Module):
             DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
                 build-essential \
                 apt-utils \
+                software-properties-common \
                 ca-certificates \
                 wget \
                 git \
