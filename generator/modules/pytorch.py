@@ -12,7 +12,7 @@ class Pytorch(Module):
         py_ver = int(float(self.composer.ver(Python))*10)
         if py_ver not in [27, 35, 36, 37]:
             raise NotImplementedError('unsupported python version for pytorch')
-        if self.version not in ['1.1', '1.2']:
+        if self.version not in ['1.1', '1.2', '1.3']:
             raise NotImplementedError('unsupported pytorch version')
 
         cuver = 'cpu' if self.composer.cuda_ver is None else 'cu%d' % (

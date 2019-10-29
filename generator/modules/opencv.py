@@ -60,6 +60,8 @@ class Opencv(Module):
                   -D WITH_V4L=ON \
                   -D WITH_QT=ON \                   
                   -D WITH_OPENCL=ON \
+                  -D WITH_GTK=ON \
+                  -D WITH_LIBV4L=ON \
                   -D BUILD_TESTS=OFF \
                   -D BUILD_PERF_TESTS=OFF \
                   -D WITH_FFMPEG=ON \
