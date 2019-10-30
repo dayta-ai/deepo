@@ -79,6 +79,11 @@ while getopts 'd:s:p:g:m:e:i:' OPTION; do
     esac
 done
 
+# Auto clean None images
+docker ps -a | grep "Exited (1" | cut -d ' ' -f 1 | xargs  docker rm > null 2>&1
+docker rmi $(docker images -f "dangling=true" -q) > null 2>&1
+rm null
+
 # Check if required argument is provided
 if [ -z $DEVELOPER_NAME ]
 then
