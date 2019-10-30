@@ -6,7 +6,7 @@
 # mxnet         latest (pip)
 # onnx          latest (pip)
 # pylint        latest (pip)
-# pytorch       1.2    (pip)
+# pytorch       1.3    (pip)
 # sklearn       latest (pip)
 # tensorflow    1.14   (pip)
 # apex          latest (git)
@@ -15,8 +15,9 @@
 # opencv        4.0.1  (git)
 # ==================================================================
 
-FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
+FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
 ENV LANG C.UTF-8
+ENV CUDA_HOME /usr/local/cuda
 RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     PIP_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
     GIT_CLONE="git clone --depth 10" && \
@@ -34,6 +35,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
         build-essential \
         apt-utils \
+        software-properties-common \
         ca-certificates \
         wget \
         git \
@@ -58,9 +60,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # python
 # ------------------------------------------------------------------
 
-    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
-        software-properties-common \
-        && \
+    DEBIAN_FRONTEND=noninteractive \
     add-apt-repository ppa:deadsnakes/ppa && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
@@ -114,7 +114,8 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         && \
 
     $PIP_INSTALL \
-        mxnet-cu100 \
+        mxnet-cu101 \
+        gluoncv \
         graphviz \
         && \
 
@@ -148,7 +149,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # pytorch
 # ------------------------------------------------------------------
 
-    $PIP_INSTALL torch==1.2 torchvision==0.4 && \
+    $PIP_INSTALL torch==1.3 torchvision==0.4 && \
 
 # ==================================================================
 # sklearn
@@ -215,6 +216,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         libjasper-dev \
         libavcodec-dev \
         libavformat-dev \
+        libavdevice-dev \
         libswscale-dev \
         libdc1394-22-dev \
         libv4l-dev \
@@ -243,6 +245,8 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
           -D WITH_V4L=ON \
           -D WITH_QT=ON \                   
           -D WITH_OPENCL=ON \
+          -D WITH_GTK=ON \
+          -D WITH_LIBV4L=ON \
           -D BUILD_TESTS=OFF \
           -D BUILD_PERF_TESTS=OFF \
           -D WITH_FFMPEG=ON \

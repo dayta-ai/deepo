@@ -18,6 +18,7 @@ class Mxnet(Module):
 
             $PIP_INSTALL \
                 mxnet%s \
+                gluoncv \
                 graphviz \
                 && \
         ''' % cuver

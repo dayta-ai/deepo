@@ -40,6 +40,7 @@ class Composer(object):
             r'''
             FROM %s
             ENV LANG C.UTF-8
+            ENV CUDA_HOME /usr/local/cuda
             RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
                 PIP_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
                 GIT_CLONE="git clone --depth 10" && \
