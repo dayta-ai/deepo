@@ -10,14 +10,6 @@ RUN pip freeze | sed s/=.*// > /tmp/existing_requirements.txt && \
 # ==================================================================
 # common dependencies
 # ------------------------------------------------------------------
-# Install torchreid
-RUN git clone https://github.com/KaiyangZhou/deep-person-reid.git && \
-    cd deep-person-reid && \
-    diff requirements.txt /tmp/existing_requirements.txt | grep "<" | sed "s/^< //" > requirements_diff.txt && \
-    pip install --no-warn-script-location -r requirements_diff.txt && \
-    python setup.py install && \
-    cd ../ && \
-    rm -rf deep-person-reid
 
 # ==================================================================
 # user space
