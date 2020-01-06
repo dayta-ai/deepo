@@ -10,18 +10,18 @@ class Theano(Module):
 
     def build(self):
         return r'''
-            DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+        RUN DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
                 libblas-dev \
                 && \
         ''' + (
             '' if self.composer.cuda_ver is None else r'''
-            wget -qO- https://github.com/Theano/libgpuarray/archive/v0.7.6.tar.gz | tar xz -C ~ && \
-            cd ~/libgpuarray* && mkdir -p build && cd build && \
+            wget -qO- https://github.com/Theano/libgpuarray/archive/v0.7.6.tar.gz | tar xz -C . && \
+            cd libgpuarray* && mkdir -p build && cd build && \
             cmake -D CMAKE_BUILD_TYPE=RELEASE \
                   -D CMAKE_INSTALL_PREFIX=/usr/local \
                   .. && \
             make -j"$(nproc)" install && \
-            cd ~/libgpuarray* && \
+            cd ../libgpuarray* && \
             python setup.py build && \
             python setup.py install && \
 
@@ -30,6 +30,5 @@ class Theano(Module):
             + r'''/x86_64-linux/include\n' > ~/.theanorc && \
         ''') + r'''
             $PIP_INSTALL \
-                https://github.com/Theano/Theano/archive/master.zip \
-                && \
+                https://github.com/Theano/Theano/archive/master.zip
         '''

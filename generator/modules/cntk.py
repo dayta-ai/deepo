@@ -13,7 +13,7 @@ class Cntk(Module):
         platform = 'cp27-cp27mu' if pyver == '2.7' else (
             'cp35-cp35m' if pyver == '3.5' else 'cp36-cp36m')
         return r'''
-            DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+        RUN DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
                 openmpi-bin \
                 libpng-dev \
                 libjpeg-dev \
@@ -36,6 +36,5 @@ class Cntk(Module):
             make -j"$(nproc)" install && \
 
             $PIP_INSTALL \
-                cntk%s \
-                && \
+                cntk%s
         ''' % ('' if self.composer.cuda_ver is None else '-gpu')

@@ -9,7 +9,6 @@ class Jupyter(Module):
 
     def build(self):
         return r'''
-            $PIP_INSTALL \
-                jupyter \
-                && \
+        RUN $PIP_INSTALL \
+                jupyter
         '''

@@ -17,8 +17,7 @@ class Tensorflow(Module):
         is_gpu = '' if self.composer.cuda_ver is None else '-gpu'
         tensorflow_version = ("tf-nightly%s-2.0-preview" % is_gpu) if self.version == 'latest' else ("tensorflow%s==%s" % (is_gpu, self.version))
         return r'''
-            $PIP_INSTALL \
-                %s \
-                && \
+        RUN $PIP_INSTALL \
+                %s
         ''' % tensorflow_version
 

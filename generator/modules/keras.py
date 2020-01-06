@@ -10,8 +10,7 @@ class Keras(Module):
 
     def build(self):
         return r'''
-            $PIP_INSTALL \
+        RUN $PIP_INSTALL \
                 h5py \
-                keras \
-                && \
+                keras
         '''

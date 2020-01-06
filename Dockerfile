@@ -1,7 +1,7 @@
 # ==================================================================
 # base image
 # ------------------------------------------------------------------
-FROM dayta/ml_development:latest
+FROM deepo_tmp
 
 # Get existing python package list and block opencv-python
 RUN pip freeze | sed s/=.*// > /tmp/existing_requirements.txt && \

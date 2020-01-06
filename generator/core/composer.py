@@ -5,7 +5,7 @@ import functools
 
 class Composer(object):
 
-    def __init__(self, modules, cuda_ver, cudnn_ver, ubuntu_ver, versions={}):
+    def __init__(self, modules, cuda_ver, cudnn_ver, ubuntu_ver, versions={}, deepstream=False):
         if len(modules) == 0:
             raise ValueError('Modules should contain at least one module')
         pending = self._traverse(modules)
@@ -14,6 +14,7 @@ class Composer(object):
         self.cuda_ver = cuda_ver
         self.cudnn_ver = cudnn_ver
         self.ubuntu_ver = ubuntu_ver
+        self.deepstream = deepstream
 
     def get(self):
         return self.modules
@@ -41,18 +42,17 @@ class Composer(object):
             FROM %s
             ENV LANG C.UTF-8
             ENV CUDA_HOME /usr/local/cuda
-            RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
-                PIP_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
-                GIT_CLONE="git clone --depth 10" && \
-
-                rm -rf /var/lib/apt/lists/* \
-                       /etc/apt/sources.list.d/cuda.list \
-                       /etc/apt/sources.list.d/nvidia-ml.list && \
-                           
-                apt-get update && \
+            ENV APT_INSTALL "apt-get install -y --no-install-recommends"
+            ENV PIP_INSTALL "python -m pip --no-cache-dir install --upgrade"
+            ENV GIT_CLONE "git clone --depth 10"
+            RUN rm -rf /var/lib/apt/lists/* \
+                    /etc/apt/sources.list.d/cuda.list \
+                    /etc/apt/sources.list.d/nvidia-ml.list && \
+                apt-get update
+            WORKDIR /tmp/
             ''' % ('ubuntu:%s' % self.ubuntu_ver if self.cuda_ver is None
                    else 'nvidia/cuda:%s-cudnn%s-devel-ubuntu%s' % (
-                    self.cuda_ver, self.cudnn_ver, self.ubuntu_ver)),
+                    self.cuda_ver, self.cudnn_ver, self.ubuntu_ver) if not self.deepstream else 'nvcr.io/nvidia/deepstream:4.0.2-19.12-devel'),
             '\n',
             '\n'.join([
                 ''.join([
@@ -63,10 +63,10 @@ class Composer(object):
             '\n',
             _indent(3, self._split('config & cleanup')),
             r'''
-                ldconfig && \
+            RUN ldconfig && \
                 apt-get clean && \
                 apt-get autoremove && \
-                rm -rf /var/lib/apt/lists/* /tmp/* ~/* && \
+                rm -rf /var/lib/apt/lists/* /tmp/* && \
                 echo "root:docker" | chpasswd
             ''',
             r'''

@@ -10,7 +10,7 @@ class Tools(Module):
 
     def build(self):
         return r'''
-            DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+        RUN DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
                 build-essential \
                 apt-utils \
                 software-properties-common \
@@ -28,9 +28,8 @@ class Tools(Module):
                 nano \
                 net-tools \
                 && \
-
-            $GIT_CLONE https://github.com/Kitware/CMake ~/cmake && \
-            cd ~/cmake && \
+            $GIT_CLONE https://github.com/Kitware/CMake cmake && \
+            cd cmake && \
             ./bootstrap --system-curl && \
-            make -j"$(nproc)" install && \
-            '''
+            make -j"$(nproc)" install
+        '''

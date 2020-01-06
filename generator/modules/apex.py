@@ -10,7 +10,7 @@ class Apex(Module):
 
     def build(self):
         return r'''
-            $GIT_CLONE https://github.com/NVIDIA/apex.git && \
+        RUN $GIT_CLONE https://github.com/NVIDIA/apex.git && \
             cd apex && \
-            pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./  && \
+            pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
         '''

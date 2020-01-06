@@ -23,7 +23,13 @@ def main():
     parser.add_argument('--cuda-ver')
     parser.add_argument('--cudnn-ver')
     parser.add_argument('--ubuntu-ver', default='18.04')
+    parser.add_argument('--deepstream', action='store_true') #use Nvidia DeepStream as base image, overwrite above 3 options 
     args = parser.parse_args()
+
+    if args.deepstream:
+        args.cuda_ver = '10.1'
+        args.cudnn_ver = '7'
+        args.ubuntu_ver = '18.04'
 
     in_modules = []
     versions = {}
@@ -33,7 +39,7 @@ def main():
         in_modules.append(m)
         if len(terms) > 1:
             versions[m] = terms[1]
-    composer = Composer(in_modules, args.cuda_ver, args.cudnn_ver, args.ubuntu_ver, versions)
+    composer = Composer(in_modules, args.cuda_ver, args.cudnn_ver, args.ubuntu_ver, versions, args.deepstream)
     with open(args.path, 'w') as f:
         f.write(composer.to_dockerfile())
 

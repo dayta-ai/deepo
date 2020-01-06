@@ -8,7 +8,6 @@ class Sklearn(Module):
 
     def build(self):
         return r'''
-            $PIP_INSTALL \
-                scikit-learn \
-                && \
+        RUN $PIP_INSTALL \
+                scikit-learn
         '''

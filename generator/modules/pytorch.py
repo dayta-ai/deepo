@@ -22,5 +22,5 @@ class Pytorch(Module):
         else:
             torchvisionver = 0.4
         return r'''
-            $PIP_INSTALL torch=={torchver} torchvision=={torchvisionver} && \
+        RUN $PIP_INSTALL torch=={torchver} torchvision=={torchvisionver}
         '''.format(torchver=self.version, torchvisionver=torchvisionver)

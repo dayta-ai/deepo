@@ -10,8 +10,7 @@ class Sonnet(Module):
 
     def build(self):
         return r'''
-            $PIP_INSTALL \
+        RUN $PIP_INSTALL \
                 tensorflow_probability \
-                dm-sonnet \
-                && \
+                dm-sonnet
         '''

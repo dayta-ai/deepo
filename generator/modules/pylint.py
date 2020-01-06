@@ -8,12 +8,10 @@ from .python import Python
 class Pylint(Module):
     def build(self):
         return r'''
-            DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+        RUN DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
                 protobuf-compiler \
                 libprotoc-dev \
                 && \
-
             $PIP_INSTALL \
-                pylint \
-                && \
+                pylint
         '''

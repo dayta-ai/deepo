@@ -15,8 +15,8 @@ class Python(Module):
 
     def build(self):
         return (
-            r'''
-            DEBIAN_FRONTEND=noninteractive \
+        r'''
+        RUN DEBIAN_FRONTEND=noninteractive \
             add-apt-repository ppa:deadsnakes/ppa && \
             apt-get update && \
             DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
@@ -24,9 +24,9 @@ class Python(Module):
                 python%s-dev \
                 python3-distutils%s \
                 && \
-            wget -O ~/get-pip.py \
+            wget -O get-pip.py \
                 https://bootstrap.pypa.io/get-pip.py && \
-            python%s ~/get-pip.py && \
+            python%s get-pip.py && \
             ln -s /usr/bin/python%s /usr/local/bin/python3 && \
             ln -s /usr/bin/python%s /usr/local/bin/python && \
             $PIP_INSTALL \
@@ -47,9 +47,8 @@ class Python(Module):
                 && \
             $PIP_INSTALL \
                 setuptools \
-                pip \
-                && \
-            '''
+                pip && \
+        '''
         ).rstrip() + r'''
             $PIP_INSTALL \
                 numpy \
@@ -58,6 +57,5 @@ class Python(Module):
                 cloudpickle \
                 scikit-learn \
                 matplotlib \
-                Cython \
-                && \
+                Cython
         '''

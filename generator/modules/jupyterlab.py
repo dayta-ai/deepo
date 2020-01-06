@@ -10,7 +10,6 @@ class Jupyterlab(Module):
 
     def build(self):
         return r'''
-            $PIP_INSTALL \
-                jupyterlab \
-                && \
+        RUN $PIP_INSTALL \
+                jupyterlab
         '''

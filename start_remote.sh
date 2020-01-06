@@ -1,8 +1,9 @@
 #!/bin/bash
 
 help(){
-    printf "script usage: $(basename $0) [-d name] [-s dir] [-p project] [-g IDs] [-m amount] [-e port] \n \
+    printf "script usage: $(basename $0) [-d name] [-b image name] [-s dir] [-p project] [-g IDs] [-m amount] [-e port] \n \
     -d name : Name of developer(container username) (required) \n \
+    -b base image : Full name the base image (default: dayta/ml_development:latest ) \n \
     -s dir : Root path of source code (default: ~/github) \n \
     -p project : Project name (directory) (default: DaytaBase) \n \
     -g IDs : IDs of GPUs which are exposed to container , seperated by comma (default: 0) \n \
@@ -39,6 +40,7 @@ find_next_available(){
 SCRIPTPATH=$(dirname $(realpath $0))
 
 # Default values
+BASE_IMAGE='dayta/ml_development:latest'
 SOURCE_CODE_DIR=${HOME}/github
 PROJECT=DaytaBase
 GPU=0
@@ -50,11 +52,14 @@ STARTUP_SCRIPT=scripts/init.sh
 TENSORBOARD_PORT=6006
 JUPYTER_PORT=8888
 
-while getopts 'd:s:p:g:m:e:i:' OPTION; do
+while getopts 'd:b:s:p:g:m:e:i:' OPTION; do
     case "$OPTION" in
     d)
         DEVELOPER_NAME=$OPTARG
         ;;
+    b)
+        BASE_IMAGE=$OPTARG
+        ;;          
     s)
         SOURCE_CODE_DIR=$OPTARG
         ;;
@@ -129,7 +134,10 @@ else
 fi
 
 # Build the image
+echo "Pulling docker base image, please wait..."
+docker pull -q ${BASE_IMAGE}
 echo "Building docker image, please wait..."
+docker tag ${BASE_IMAGE} deepo_tmp
 docker build \
     --quiet \
     -t ${ML_IMAGE_NAME} \

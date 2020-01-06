@@ -11,8 +11,7 @@ class Lasagne(Module):
 
     def build(self):
         return r'''
-            $GIT_CLONE https://github.com/Lasagne/Lasagne ~/lasagne && \
-            cd ~/lasagne && \
-            $PIP_INSTALL \
-                . && \
+        RUN $GIT_CLONE https://github.com/Lasagne/Lasagne lasagne && \
+            cd lasagne && \
+            $PIP_INSTALL .
         '''

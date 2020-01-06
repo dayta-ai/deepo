@@ -9,11 +9,11 @@ class Torch(Module):
 
     def build(self):
         return r'''
-            export TORCH_NVCC_FLAGS="-D__CUDA_NO_HALF_OPERATORS__" && \
-            $GIT_CLONE https://github.com/nagadomi/distro.git ~/torch''' \
+        RUN export TORCH_NVCC_FLAGS="-D__CUDA_NO_HALF_OPERATORS__" && \
+            $GIT_CLONE https://github.com/nagadomi/distro.git torch''' \
         + r''' --recursive && \
 
-            cd ~/torch/exe/luajit-rocks && \
+            cd torch/exe/luajit-rocks && \
             mkdir build && cd build && \
             cmake -D CMAKE_BUILD_TYPE=RELEASE \
                   -D CMAKE_INSTALL_PREFIX=/usr/local \
@@ -24,14 +24,11 @@ class Torch(Module):
             DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
                 libjpeg-dev \
                 libpng-dev \
-                libreadline-dev \
-                && \
-
-            $GIT_CLONE https://github.com/Yonaba/Moses ~/moses && \
-            cd ~/moses && \
+                libreadline-dev
+        RUN $GIT_CLONE https://github.com/Yonaba/Moses moses && \
+            cd moses && \
             luarocks install rockspec/moses-1.6.1-1.rockspec && \
-
-            cd ~/torch && \
+            cd ../torch && \
             sed -i 's/extra\/cudnn/extra\/cudnn ''' \
         + r'''\&\& git checkout R7/' install.sh && \
             sed -i 's/$PREFIX\/bin\/luarocks/luarocks/' install.sh && \
@@ -46,5 +43,5 @@ class Torch(Module):
         ) + r'''
             yes no | ./install.sh && \
             luarocks install image && \
-            luarocks install nn && \
+            luarocks install nn
         '''
