@@ -6,7 +6,7 @@
 # mxnet         latest (pip)
 # onnx          latest (pip)
 # pylint        latest (pip)
-# pytorch       1.3    (pip)
+# pytorch       1.4    (pip)
 # sklearn       latest (pip)
 # tensorflow    1.14   (pip)
 # apex          latest (git)
@@ -139,7 +139,7 @@ RUN DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
 # pytorch
 # ------------------------------------------------------------------
 
-RUN $PIP_INSTALL torch==1.3 torchvision==0.4
+    RUN $PIP_INSTALL torch==1.4 torchvision==0.5
 
 # ==================================================================
 # sklearn

@@ -4,7 +4,7 @@ from .tools import Tools
 
 
 @dependency(Tools)
-@version('3.6')
+@version('3.7')
 @source('apt')
 class Python(Module):
 
