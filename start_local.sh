@@ -1,15 +1,16 @@
 #!/bin/bash
 
 help(){
-    printf "script usage: $(basename $0) [-d name] [-b image name] [-s dir] [-p project] [-g IDs] [-m amount] [-e port] \n \
+    printf "script usage: $(basename $0) [-d name] [-b image name] [-s dir] [-p project] [-g IDs] [-m amount] [-e port] [-i init] [-v verbose] \n \
     -d name : Name of developer(container username) (required) \n \
     -b base image : Full name the base image (default: dayta/ml_development:latest ) \n \
     -s dir : Root path of source code (default: ~/github) \n \
     -p project : Project name (directory) (default: DaytaBase) \n \
     -g IDs : IDs of GPUs which are exposed to container , seperated by comma (default: 0) \n \
     -m amount : share memory size (default: 2g) \n \
-    -e exposed port : expose extra port, can be a port number or a range of port number \n \
-    -i init script : starting script \n \    
+    -e exposed port : expose extra port, can be a port number or a range of port number (default: None) \n \
+    -i init script : starting shell script (default: scripts/init.sh) \n \
+    -v verbose : enable docker build logs (default: False) \n \
     " >&2
     exit 1
 }
@@ -26,7 +27,7 @@ find_next_available(){
             then
                 ((find_next_available_ret++))
             else
-                break            
+                break
             fi
         elif [ "$item" = "$find_next_available_ret" ]
         then
@@ -47,19 +48,20 @@ GPU=0
 SHM_SIZE=2g
 EXPOSED_PORT=''
 STARTUP_SCRIPT=scripts/init.sh
+VERBOSE='-q'
 
 # Constants
 TENSORBOARD_PORT=16006
 JUPYTER_PORT=8888
 
-while getopts 'd:b:s:p:g:m:e:i:' OPTION; do
+while getopts 'd:b:s:p:g:m:e:i:v' OPTION; do
     case "$OPTION" in
     d)
         DEVELOPER_NAME=$OPTARG
         ;;
     b)
         BASE_IMAGE=$OPTARG
-        ;;        
+        ;;
     s)
         SOURCE_CODE_DIR=$OPTARG
         ;;
@@ -71,13 +73,16 @@ while getopts 'd:b:s:p:g:m:e:i:' OPTION; do
         ;;
     m)
         SHM_SIZE=$OPTARG
-        ;; 
+        ;;
     e)
         EXPOSED_PORT=$OPTARG
         ;;
     i)
         STARTUP_SCRIPT=$OPTARG
-        ;;                
+        ;;
+    v)
+        VERBOSE=''
+        ;;
     ?)
         help
         ;;
@@ -126,11 +131,11 @@ fi
 
 # Build the image
 echo "Pulling docker base image, please wait..."
-docker pull -q ${BASE_IMAGE}
+docker pull ${VERBOSE} ${BASE_IMAGE}
 echo "Building docker image, please wait..."
 docker tag ${BASE_IMAGE} deepo_tmp
 docker build \
-    --quiet \
+    ${VERBOSE} \
     -t ${ML_IMAGE_NAME} \
     --build-arg USERNAME=${ML_CONTAINER_USERNAME} \
     --build-arg USER_ID=$(id -u) \
@@ -190,7 +195,7 @@ TENSORBOARD_PORT=$find_next_available_ret
 if [ ! -z $EXPOSED_PORT ]
 then
     EXPOSED_PORT="-p $EXPOSED_PORT:$EXPOSED_PORT"
-fi 
+fi
 
 # Launch the container
 docker run -it --rm \
