@@ -49,7 +49,7 @@ EXPOSED_PORT=''
 STARTUP_SCRIPT=scripts/init.sh
 
 # Constants
-TENSORBOARD_PORT=6006
+TENSORBOARD_PORT=16006
 JUPYTER_PORT=8888
 
 while getopts 'd:b:s:p:g:m:e:i:' OPTION; do
