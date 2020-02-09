@@ -108,6 +108,13 @@ then
     help
 fi
 
+# Check if DISPLAY environment variable is set
+if [ -z $DISPLAY ]
+then
+    printf "\$DISPLAY environment variable is not set, check your ssh command or use start_local.sh if you don't need to forward X11(application display) \n"
+    exit 1
+fi
+
 # Define image name, conatiner name and container username, container display number
 ML_CONTAINER_DISPLAY="0"
 ML_IMAGE_NAME=$DEVELOPER_NAME\_$PROJECT\_ENVIRONMENT
@@ -165,7 +172,7 @@ fi
 xauth -v -f .display_${DISPLAY_NUMBER}/Xauthority add ${ML_CONTAINER_NAME}/unix:${ML_CONTAINER_DISPLAY} MIT-MAGIC-COOKIE-1 ${AUTH_COOKIE}
 
 # Proxy with the :0 DISPLAY
-socat -d -d -d TCP4:localhost:60${DISPLAY_NUMBER} UNIX-LISTEN:.display_${DISPLAY_NUMBER}/socket/X${ML_CONTAINER_DISPLAY} > socat.log 2>&1 &
+while true; do socat -d -d TCP4:localhost:60${DISPLAY_NUMBER} UNIX-LISTEN:.display_${DISPLAY_NUMBER}/socket/X${ML_CONTAINER_DISPLAY} > .display_${DISPLAY_NUMBER}/socat.log 2>&1; sleep 1; done &
 
 # Determine docker run gpu arguments by docker version
 chmod u+x scripts/version_compare
@@ -245,3 +252,6 @@ docker run -it --rm \
     ${EXPOSED_PORT} \
     -w /home/${ML_CONTAINER_USERNAME}/workspace/${PROJECT} \
     ${ML_IMAGE_NAME} /home/${ML_CONTAINER_USERNAME}/init.sh
+
+# Kill while true socat loop
+kill -9 $!
