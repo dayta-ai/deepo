@@ -176,6 +176,12 @@ done
 # Create Jupyter directory
 mkdir -p ${SCRIPTPATH}/User_${ML_CONTAINER_USERNAME}/.jupyter
 
+# Create pytorch cache directory
+mkdir -p ${HOME}/.cache/torch/checkpoints/
+
+# Create mxnet cache directory
+mkdir -p ${HOME}/.mxnet/
+
 # Get jupyter port
 find_next_available $JUPYTER_PORT $(docker ps --format {{.Ports}} | \
                          tr , '\n' | \
@@ -214,6 +220,7 @@ docker run -it --rm \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v ${SOURCE_CODE_DIR}:/home/${ML_CONTAINER_USERNAME}/workspace \
     -v ${HOME}/.cache/torch/checkpoints:/home/${ML_CONTAINER_USERNAME}/.cache/torch/checkpoints \
+    -v ${HOME}/.mxnet:/home/${ML_CONTAINER_USERNAME}/.mxnet \
     -v ${SCRIPTPATH}/User_${ML_CONTAINER_USERNAME}/.jupyter:/home/${ML_CONTAINER_USERNAME}/.jupyter \
     ${N_DRIVES} \
     -p ${TENSORBOARD_PORT}:${TENSORBOARD_PORT} \

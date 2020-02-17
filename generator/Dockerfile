@@ -6,7 +6,7 @@
 # mxnet         latest (pip)
 # onnx          latest (pip)
 # pylint        latest (pip)
-# pytorch       1.4    (pip)
+# pytorch       1.3    (pip)
 # sklearn       latest (pip)
 # tensorflow    1.14   (pip)
 # apex          latest (git)
@@ -15,7 +15,7 @@
 # opencv        4.0.1  (git)
 # ==================================================================
 
-FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
+FROM nvcr.io/nvidia/deepstream:4.0.2-19.12-devel
 ENV LANG C.UTF-8
 ENV CUDA_HOME /usr/local/cuda
 ENV APT_INSTALL "apt-get install -y --no-install-recommends"
@@ -139,7 +139,7 @@ RUN DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
 # pytorch
 # ------------------------------------------------------------------
 
-    RUN $PIP_INSTALL torch==1.4 torchvision==0.5
+RUN $PIP_INSTALL torch==1.3 torchvision==0.4.1 Pillow==6.1
 
 # ==================================================================
 # sklearn
